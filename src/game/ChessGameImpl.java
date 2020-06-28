@@ -19,6 +19,6 @@ public class ChessGameImpl implements ChessGame {
 
   @Override
   public void makeComputerMove() {
-
+    // TODO
   }
 }

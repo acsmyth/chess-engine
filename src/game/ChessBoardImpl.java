@@ -17,6 +17,20 @@ public class ChessBoardImpl implements ChessBoard {
     initBoard(7, -1, true);
   }
 
+  public ChessBoardImpl(ChessPiece[][] board) {
+    this.board = deepClone(board);
+  }
+
+  private ChessPiece[][] deepClone(ChessPiece[][] arr) {
+    ChessPiece[][] newArr = new ChessPiece[arr.length][arr[0].length];
+    for (int i=0;i<arr.length;i++) {
+      for (int p=0;p<arr[0].length;p++) {
+        newArr[i][p] = arr[i][p].copy();
+      }
+    }
+    return newArr;
+  }
+
   private void initBoard(int r, int delta, boolean isWhitePiece) {
     board[r][0] = new Rook(isWhitePiece);
     board[r][1] = new Knight(isWhitePiece);
@@ -43,6 +57,7 @@ public class ChessBoardImpl implements ChessBoard {
     }
     // now, delegate to the piece to make sure its a valid move format of the piece
     // finally, check that the move doesn't lead the moving side's king to be in check
+    return board[fromRow][fromCol].isLegalMove(toRow, toCol, board);
   }
 
   private boolean isOccupied(int fromRow, int fromCol) {
@@ -55,6 +70,12 @@ public class ChessBoardImpl implements ChessBoard {
 
   @Override
   public void makeMove(int fromRow, int fromCol, int toRow, int toCol) {
+    // TODO
+  }
 
+  @Override
+  public boolean kingIsInCheck() {
+    // TODO
+    return false;
   }
 }
