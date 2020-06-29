@@ -15,14 +15,14 @@ public class Pawn extends AbstractChessPiece implements ChessPiece {
     ChessPiece toPiece = board[toRow][toCol];
     if (c == toCol) {
       // if moving forward, must be no piece in either spot
-      return (r - (toRow * sideAsInt()) == 1 && board[toRow][toCol] == null)
+      return (r - (toRow * sideAsInt()) == 1 && toPiece == null)
               ||
-              (r - (toRow * sideAsInt()) == 2 && board[toRow][toCol] == null
+              (r - (toRow * sideAsInt()) == 2 && toPiece == null
               && board[toRow + sideAsInt()][toCol] == null);
     } else {
       // opposite side piece must be there
       return (r - toRow == sideAsInt() && Math.abs(c - toCol) == 1
-              && board[toRow][toCol] != null && side() != board[toRow][toCol].side())
+              && toPiece != null && side() != toPiece.side())
               ||
               (board[r][toCol] != null && side() != board[r][toCol].side()
                       && board[r][toCol] instanceof Pawn
@@ -39,5 +39,8 @@ public class Pawn extends AbstractChessPiece implements ChessPiece {
   public void update(int r, int c) {
     super.update(r, c);
     hasMoved = true;
+    justAdvancedTwoSquares = Math.abs(r - this.r) == 2;
+    // TODO - this ^ needs to be updated to false
+    //  once the next move happens
   }
 }
