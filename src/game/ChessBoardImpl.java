@@ -32,16 +32,16 @@ public class ChessBoardImpl implements ChessBoard {
   }
 
   private void initBoard(int r, int delta, boolean isWhitePiece) {
-    board[r][0] = new Rook(isWhitePiece);
-    board[r][1] = new Knight(isWhitePiece);
-    board[r][2] = new Bishop(isWhitePiece);
-    board[r][3] = new Queen(isWhitePiece);
-    board[r][4] = new King(isWhitePiece);
-    board[r][5] = new Bishop(isWhitePiece);
-    board[r][6] = new Knight(isWhitePiece);
-    board[r][7] = new Rook(isWhitePiece);
+    board[r][0] = new Rook(r, 0, isWhitePiece);
+    board[r][1] = new Knight(r, 1, isWhitePiece);
+    board[r][2] = new Bishop(r, 2, isWhitePiece);
+    board[r][3] = new Queen(r, 3, isWhitePiece);
+    board[r][4] = new King(r, 4, isWhitePiece);
+    board[r][5] = new Bishop(r, 5, isWhitePiece);
+    board[r][6] = new Knight(r, 6, isWhitePiece);
+    board[r][7] = new Rook(r, 7, isWhitePiece);
     for (int p=0; p<8; p++) {
-      board[r+delta][p] = new Pawn(isWhitePiece);
+      board[r+delta][p] = new Pawn(r+delta, p, isWhitePiece);
     }
   }
 
@@ -71,6 +71,9 @@ public class ChessBoardImpl implements ChessBoard {
   @Override
   public void makeMove(int fromRow, int fromCol, int toRow, int toCol) {
     // TODO
+
+    // have to set pawn hasMoved to true
+    board[toRow][toCol].update(toRow, toCol, true);
   }
 
   @Override

@@ -1,17 +1,17 @@
 package piece;
 
 public class Bishop extends AbstractChessPiece implements ChessPiece {
-  public Bishop(boolean isWhitePiece) {
-    super(isWhitePiece);
+  public Bishop(int r, int c, boolean isWhitePiece) {
+    super(r, c, isWhitePiece);
   }
 
   @Override
-  protected boolean moveFitsLegalMotionPattern(int toRow, int toCol) {
+  protected boolean isLegalMoveIgnoringChecks(int toRow, int toCol, ChessPiece[][] board) {
     return false;
   }
 
   @Override
-  public ChessPiece create(boolean isWhitePiece) {
-    return new Bishop(isWhitePiece);
+  public ChessPiece create(int r, int c, boolean isWhitePiece) {
+    return new Bishop(r, c, isWhitePiece);
   }
 }

@@ -1,8 +1,8 @@
 package piece;
 
 public class Rook extends AbstractChessPiece implements ChessPiece {
-  public Rook(boolean isWhitePiece) {
-    super(isWhitePiece);
+  public Rook(int r, int c, boolean isWhitePiece) {
+    super(r, c, isWhitePiece);
   }
 
   @Override
@@ -11,7 +11,7 @@ public class Rook extends AbstractChessPiece implements ChessPiece {
   }
 
   @Override
-  public ChessPiece create(boolean isWhitePiece) {
-    return new Rook(isWhitePiece);
+  public ChessPiece create(int r, int c, boolean isWhitePiece) {
+    return new Rook(r, c, isWhitePiece);
   }
 }
