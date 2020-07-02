@@ -1,16 +1,21 @@
 package piece;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import game.ChessBoardImpl;
 
 public abstract class AbstractChessPiece implements ChessPiece {
   protected int r;
   protected int c;
   private final boolean isWhitePiece;
+  protected List<Move> cachedLegalMoves;
 
   public AbstractChessPiece(int r, int c, boolean isWhitePiece) {
     this.r = r;
     this.c = c;
     this.isWhitePiece = isWhitePiece;
+    cachedLegalMoves = null;
   }
 
   @Override
@@ -24,9 +29,15 @@ public abstract class AbstractChessPiece implements ChessPiece {
   }
 
   @Override
-  public void update(int r, int c) {
-    this.r = r;
-    this.c = c;
+  public void updatePieceMoved(int toR, int toC) {
+    r = toR;
+    c = toC;
+    cachedLegalMoves = null;
+  }
+
+  @Override
+  public void updatePieceNotMoved(int toR, int toC) {
+    cachedLegalMoves = null;
   }
 
   @Override

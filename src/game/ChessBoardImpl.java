@@ -70,10 +70,17 @@ public class ChessBoardImpl implements ChessBoard {
 
   @Override
   public void makeMove(int fromRow, int fromCol, int toRow, int toCol) {
-    // TODO
+    board[toRow][toCol] = board[fromRow][fromCol];
+    board[fromRow][fromCol] = null;
 
-    // have to set pawn hasMoved to true
-    board[toRow][toCol].update(toRow, toCol, true);
+    board[toRow][toCol].updatePieceMoved(toRow, toCol);
+    for (int r=0;r<8;r++) {
+      for (int c=0;c<8;c++) {
+        if (r != toRow && c != toCol) {
+          board[r][c].updatePieceNotMoved(r, c);
+        }
+      }
+    }
   }
 
   @Override

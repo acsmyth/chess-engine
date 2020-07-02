@@ -1,5 +1,7 @@
 package piece;
 
+import java.util.List;
+
 public interface ChessPiece extends Cloneable {
   boolean side();
 
@@ -11,5 +13,9 @@ public interface ChessPiece extends Cloneable {
 
   ChessPiece create(int r, int c, boolean isWhitePiece);
 
-  void update(int r, int c);
+  void updatePieceMoved(int toR, int toC);
+
+  void updatePieceNotMoved(int toR, int toC);
+
+  List<Move> getLegalMoves();
 }

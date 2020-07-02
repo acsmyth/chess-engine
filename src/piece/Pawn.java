@@ -1,5 +1,7 @@
 package piece;
 
+import java.util.List;
+
 public class Pawn extends AbstractChessPiece implements ChessPiece {
   private boolean hasMoved;
   private boolean justAdvancedTwoSquares;
@@ -15,10 +17,10 @@ public class Pawn extends AbstractChessPiece implements ChessPiece {
     ChessPiece toPiece = board[toRow][toCol];
     if (c == toCol) {
       // if moving forward, must be no piece in either spot
-      return (r - (toRow * sideAsInt()) == 1 && toPiece == null)
+      return (r - toRow == sideAsInt() && toPiece == null)
               ||
-              (r - (toRow * sideAsInt()) == 2 && toPiece == null
-              && board[toRow + sideAsInt()][toCol] == null);
+              (r - toRow == 2 * sideAsInt() && toPiece == null
+              && board[toRow - sideAsInt()][toCol] == null);
     } else {
       // opposite side piece must be there
       return (r - toRow == sideAsInt() && Math.abs(c - toCol) == 1
@@ -36,11 +38,14 @@ public class Pawn extends AbstractChessPiece implements ChessPiece {
   }
 
   @Override
-  public void update(int r, int c) {
-    super.update(r, c);
+  public void updatePieceMoved(int toR, int toC) {
     hasMoved = true;
-    justAdvancedTwoSquares = Math.abs(r - this.r) == 2;
-    // TODO - this ^ needs to be updated to false
-    //  once the next move happens
+    justAdvancedTwoSquares = r - toR == 2 * sideAsInt();
+    super.updatePieceMoved(r, c);
+  }
+
+  @Override
+  public List<Move> getLegalMoves() {
+    return null;
   }
 }
