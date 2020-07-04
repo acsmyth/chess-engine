@@ -45,7 +45,12 @@ public class Pawn extends AbstractChessPiece implements ChessPiece {
   }
 
   @Override
-  public List<Move> getLegalMoves() {
+  public List<Move> calculateLegalMoves(ChessPiece[][] board) {
+
+  }
+
+  @Override
+  public List<Move> getAttackMoves(ChessPiece[][] board) {
     return null;
   }
 }

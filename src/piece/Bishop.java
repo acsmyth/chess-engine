@@ -1,5 +1,6 @@
 package piece;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Bishop extends AbstractChessPiece implements ChessPiece {
@@ -9,7 +10,7 @@ public class Bishop extends AbstractChessPiece implements ChessPiece {
 
   @Override
   protected boolean isLegalMoveIgnoringChecks(int toR, int toC, ChessPiece[][] board) {
-    return getLegalMoves().contains(new Move(r, c, toR, toC));
+    return getLegalMoves(board).contains(new Move(r, c, toR, toC));
   }
 
   @Override
@@ -18,8 +19,32 @@ public class Bishop extends AbstractChessPiece implements ChessPiece {
   }
 
   @Override
-  public List<Move> getLegalMoves() {
+  public List<Move> getLegalMoves(ChessPiece[][] board) {
     if (cachedLegalMoves != null) return cachedLegalMoves;
+    List<Move> newLegalMoves = new ArrayList<>();
+    addMoves(-1, -1, board, newLegalMoves);
+    addMoves(1, -1, board, newLegalMoves);
+    addMoves(-1, 1, board, newLegalMoves);
+    addMoves(1, 1, board, newLegalMoves);
+    cachedLegalMoves = newLegalMoves;
+    return newLegalMoves;
+  }
 
+  private void addMoves(int rowInc, int colInc, ChessPiece[][] board, List<Move> newLegalMoves) {
+    int i = r + rowInc;
+    int p = c + colInc;
+    while (inBounds(i, p) && board[i][i] == null) {
+      newLegalMoves.add(new Move(r, c, i, p));
+      i += rowInc;
+      p += colInc;
+    }
+    if (inBounds(i, p) && side() != board[i][i].side()) {
+      newLegalMoves.add(new Move(r, c, i, p));
+    }
+  }
+
+  @Override
+  public List<Move> getAttackMoves(ChessPiece[][] board) {
+    if (cachedAttackMoves != null) return cachedAttackMoves;
   }
 }

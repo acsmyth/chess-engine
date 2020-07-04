@@ -74,8 +74,8 @@ public class ChessBoardImpl implements ChessBoard {
     board[fromRow][fromCol] = null;
 
     board[toRow][toCol].updatePieceMoved(toRow, toCol);
-    for (int r=0;r<8;r++) {
-      for (int c=0;c<8;c++) {
+    for (int r = 0; r < 8; r++) {
+      for (int c = 0; c < 8; c++) {
         if (r != toRow && c != toCol) {
           board[r][c].updatePieceNotMoved(r, c);
         }
@@ -85,7 +85,12 @@ public class ChessBoardImpl implements ChessBoard {
 
   @Override
   public boolean kingIsInCheck() {
-    // TODO
-    return false;
+    for (int r=0;r<8;r++) {
+      for (int c=0;c<8;c++) {
+        if (board[r][c] != null) {
+          board[r][c].getAttackMoves();
+        }
+      }
+    }
   }
 }

@@ -1,8 +1,6 @@
 package piece;
 
-import java.util.ArrayList;
 import java.util.List;
-
 import game.ChessBoardImpl;
 
 public abstract class AbstractChessPiece implements ChessPiece {
@@ -10,6 +8,7 @@ public abstract class AbstractChessPiece implements ChessPiece {
   protected int c;
   private final boolean isWhitePiece;
   protected List<Move> cachedLegalMoves;
+  protected List<Move> cachedAttackMoves;
 
   public AbstractChessPiece(int r, int c, boolean isWhitePiece) {
     this.r = r;
@@ -52,4 +51,25 @@ public abstract class AbstractChessPiece implements ChessPiece {
   public ChessPiece copy() {
     return create(r, c, isWhitePiece);
   }
+
+  protected static boolean inBounds(int r, int c) {
+    return r >= 0 && r < 8 && c >= 0 && c < 8;
+  }
+
+  @Override
+  public List<Move> getLegalMoves(ChessPiece[][] board) {
+    if (cachedLegalMoves != null) return cachedLegalMoves;
+    cachedLegalMoves = calculateLegalMoves(board);
+    return cachedLegalMoves;
+  }
+
+  public List<Move> getAttackMoves(ChessPiece[][] board) {
+    if (cachedAttackMoves != null) return cachedAttackMoves;
+    cachedAttackMoves = calculateAttackMoves(board);
+    return cachedAttackMoves;
+  }
+
+  protected abstract List<Move> calculateLegalMoves(ChessPiece[][] board);
+
+  protected abstract List<Move> calculateAttackMoves(ChessPiece[][] board);
 }

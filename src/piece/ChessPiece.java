@@ -17,5 +17,7 @@ public interface ChessPiece extends Cloneable {
 
   void updatePieceNotMoved(int toR, int toC);
 
-  List<Move> getLegalMoves();
+  List<Move> getLegalMoves(ChessPiece[][] board);
+
+  List<Move> getAttackMoves(ChessPiece[][] board);
 }
