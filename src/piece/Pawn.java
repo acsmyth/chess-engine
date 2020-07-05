@@ -1,5 +1,7 @@
 package piece;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Pawn extends AbstractChessPiece implements ChessPiece {
@@ -45,12 +47,32 @@ public class Pawn extends AbstractChessPiece implements ChessPiece {
   }
 
   @Override
-  public List<Move> calculateLegalMoves(ChessPiece[][] board) {
-
+  public List<Move> calculateLegalMovesIgnoringChecks(ChessPiece[][] board) {
+    List<Move> legalMoves = new ArrayList<>();
+    if (board[r - sideAsInt()][c] == null) {
+      legalMoves.add(new Move(r, c, r - sideAsInt(), c));
+    }
+    if (board[r - sideAsInt()][c] == null && board[r - 2 * sideAsInt()][c] == null
+            && !hasMoved) {
+      legalMoves.add(new Move(r, c, r - 2 * sideAsInt(), c));
+    }
+    if ((board[r - sideAsInt()][c - 1] != null && side() != board[r - sideAsInt()][c - 1].side())
+            || (board[r][c - 1] != null && side() != board[r][c - 1].side()
+            && board[r][c - 1] instanceof Pawn && ((Pawn)board[r][c - 1]).justAdvancedTwoSquares)) {
+      legalMoves.add(new Move(r, c, r - sideAsInt(), c - 1));
+    }
+    if ((board[r - sideAsInt()][c + 1] != null && side() != board[r - sideAsInt()][c + 1].side())
+            || (board[r][c + 1] != null && side() != board[r][c + 1].side()
+            && board[r][c + 1] instanceof Pawn && ((Pawn)board[r][c + 1]).justAdvancedTwoSquares)) {
+      legalMoves.add(new Move(r, c, r - sideAsInt(), c + 1));
+    }
+    return legalMoves;
   }
 
   @Override
-  public List<Move> getAttackMoves(ChessPiece[][] board) {
-    return null;
+  protected List<Move> calculateAttackMoves(ChessPiece[][] board) {
+    return Arrays.asList(
+            new Move(r, c, r - sideAsInt(), c - 1),
+            new Move(r, c, r - sideAsInt(), c + 1));
   }
 }

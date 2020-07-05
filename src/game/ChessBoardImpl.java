@@ -1,30 +1,39 @@
 package game;
 
+import java.util.List;
 import piece.Bishop;
 import piece.ChessPiece;
 import piece.King;
 import piece.Knight;
+import piece.Move;
 import piece.Pawn;
 import piece.Queen;
 import piece.Rook;
+import util.Pos;
 
 public class ChessBoardImpl implements ChessBoard {
-  ChessPiece[][] board;
+  private final ChessPiece[][] board;
+  private final Pos whiteKingPos;
+  private final Pos blackKingPos;
 
   public ChessBoardImpl() {
     board = new ChessPiece[8][8];
     initBoard(0, 1, false);
     initBoard(7, -1, true);
+    whiteKingPos = getKingPos(true);
+    blackKingPos = getKingPos(false);
   }
 
   public ChessBoardImpl(ChessPiece[][] board) {
     this.board = deepClone(board);
+    whiteKingPos = getKingPos(true);
+    blackKingPos = getKingPos(false);
   }
 
   private ChessPiece[][] deepClone(ChessPiece[][] arr) {
     ChessPiece[][] newArr = new ChessPiece[arr.length][arr[0].length];
-    for (int i=0;i<arr.length;i++) {
-      for (int p=0;p<arr[0].length;p++) {
+    for (int i = 0; i < arr.length; i++) {
+      for (int p = 0; p < arr[0].length; p++) {
         newArr[i][p] = arr[i][p].copy();
       }
     }
@@ -40,8 +49,8 @@ public class ChessBoardImpl implements ChessBoard {
     board[r][5] = new Bishop(r, 5, isWhitePiece);
     board[r][6] = new Knight(r, 6, isWhitePiece);
     board[r][7] = new Rook(r, 7, isWhitePiece);
-    for (int p=0; p<8; p++) {
-      board[r+delta][p] = new Pawn(r+delta, p, isWhitePiece);
+    for (int p = 0; p < 8; p++) {
+      board[r + delta][p] = new Pawn(r + delta, p, isWhitePiece);
     }
   }
 
@@ -84,13 +93,36 @@ public class ChessBoardImpl implements ChessBoard {
   }
 
   @Override
-  public boolean kingIsInCheck() {
-    for (int r=0;r<8;r++) {
-      for (int c=0;c<8;c++) {
+  public boolean kingIsInCheck(boolean side) {
+    Pos kingPos = side ? whiteKingPos : blackKingPos;
+    for (int r = 0; r < 8; r++) {
+      for (int c = 0; c < 8; c++) {
         if (board[r][c] != null) {
-          board[r][c].getAttackMoves();
+          List<Move> attackMoves = board[r][c].getAttackMoves(board);
+          for (Move move : attackMoves) {
+            if (kingPos.r == move.toR && kingPos.c == move.toC) {
+              return true;
+            }
+          }
         }
       }
     }
+    return false;
+  }
+
+  private Pos getKingPos(boolean side) {
+    for (int r = 0; r < 8; r++) {
+      for (int c = 0; c < 8; c++) {
+        if (board[r][c] != null && board[r][c] instanceof King && board[r][c].side() == side) {
+          return new Pos(r, c);
+        }
+      }
+    }
+    return null;
+  }
+
+  @Override
+  public void makeMove(Move move) {
+    makeMove(move.fromR, move.fromC, move.toR, move.toC);
   }
 }

@@ -14,6 +14,6 @@ public class Main {
 
     // use set/hashset/hashmap instead of lists
 
-    // optimize algorithm for finding legal moves
+    // calculate legal moves as a subset of attack moves
   }
 }

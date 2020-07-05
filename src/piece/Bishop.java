@@ -19,7 +19,7 @@ public class Bishop extends AbstractChessPiece implements ChessPiece {
   }
 
   @Override
-  public List<Move> getLegalMoves(ChessPiece[][] board) {
+  public List<Move> calculateLegalMovesIgnoringChecks(ChessPiece[][] board) {
     if (cachedLegalMoves != null) return cachedLegalMoves;
     List<Move> newLegalMoves = new ArrayList<>();
     addMoves(-1, -1, board, newLegalMoves);
@@ -44,7 +44,7 @@ public class Bishop extends AbstractChessPiece implements ChessPiece {
   }
 
   @Override
-  public List<Move> getAttackMoves(ChessPiece[][] board) {
-    if (cachedAttackMoves != null) return cachedAttackMoves;
+  protected List<Move> calculateAttackMoves(ChessPiece[][] board) {
+    return null;
   }
 }

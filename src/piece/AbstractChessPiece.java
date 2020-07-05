@@ -1,6 +1,9 @@
 package piece;
 
+import java.util.Iterator;
 import java.util.List;
+
+import game.ChessBoard;
 import game.ChessBoardImpl;
 
 public abstract class AbstractChessPiece implements ChessPiece {
@@ -40,9 +43,10 @@ public abstract class AbstractChessPiece implements ChessPiece {
   }
 
   @Override
-  public boolean isLegalMove(int toRow, int toCol, ChessPiece[][] board) {
-    return isLegalMoveIgnoringChecks(toRow, toCol, board)
-            && new ChessBoardImpl(board).kingIsInCheck();
+  public boolean isLegalMove(int toR, int toC, ChessPiece[][] board) {
+    ChessBoard newBoard = new ChessBoardImpl(board);
+    newBoard.makeMove(r, c, toR, toC);
+    return isLegalMoveIgnoringChecks(toR, toC, board) && newBoard.kingIsInCheck(side());
   }
 
   abstract protected boolean isLegalMoveIgnoringChecks(int toRow, int toCol, ChessPiece[][] board);
@@ -69,7 +73,21 @@ public abstract class AbstractChessPiece implements ChessPiece {
     return cachedAttackMoves;
   }
 
-  protected abstract List<Move> calculateLegalMoves(ChessPiece[][] board);
+  public List<Move> calculateLegalMoves(ChessPiece[][] board) {
+    List<Move> legalMovesIgnoringChecks = calculateLegalMovesIgnoringChecks(board);
+    Iterator<Move> it = legalMovesIgnoringChecks.iterator();
+    while (it.hasNext()) {
+      Move move = it.next();
+      ChessBoard newBoard = new ChessBoardImpl(board);
+      newBoard.makeMove(move);
+      if (newBoard.kingIsInCheck(side())) {
+        it.remove();
+      }
+    }
+    return legalMovesIgnoringChecks;
+  }
+
+  protected abstract List<Move> calculateLegalMovesIgnoringChecks(ChessPiece[][] board);
 
   protected abstract List<Move> calculateAttackMoves(ChessPiece[][] board);
 }

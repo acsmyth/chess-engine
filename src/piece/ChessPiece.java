@@ -7,7 +7,7 @@ public interface ChessPiece extends Cloneable {
 
   int sideAsInt();
 
-  boolean isLegalMove(int toRow, int toCol, ChessPiece[][] board);
+  boolean isLegalMove(int toR, int toC, ChessPiece[][] board);
 
   ChessPiece copy();
 
