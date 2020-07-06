@@ -18,9 +18,8 @@ public class Knight extends AbstractChessPiece implements ChessPiece {
   @Override
   protected List<Move> calculateLegalMovesIgnoringChecks(ChessPiece[][] board) {
     List<Move> potentialLegalMoves = getAttackMoves(board);
-    potentialLegalMoves.removeIf(move -> !inBounds(move.toR, move.toC)
-            || (board[move.toR][move.toC] != null
-            && side() == board[move.toR][move.toC].side()));
+    potentialLegalMoves.removeIf(move -> board[move.toR][move.toC] != null
+            && side() == board[move.toR][move.toC].side());
     return potentialLegalMoves;
   }
 

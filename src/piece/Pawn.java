@@ -57,7 +57,7 @@ public class Pawn extends AbstractChessPiece implements ChessPiece {
             && board[r][c - 1] instanceof Pawn && ((Pawn)board[r][c - 1]).justAdvancedTwoSquares))) {
       legalMoves.add(new Move(r, c, r - sideAsInt(), c - 1));
     }
-    if (Utils.inBounds(r - sideAsInt(), c - 1)
+    if (Utils.inBounds(r - sideAsInt(), c + 1)
             && ((board[r - sideAsInt()][c + 1] != null
             && side() != board[r - sideAsInt()][c + 1].side())
             || (board[r][c + 1] != null && side() != board[r][c + 1].side()

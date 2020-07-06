@@ -1,5 +1,6 @@
 package game;
 
+import java.util.ArrayList;
 import java.util.List;
 import piece.Bishop;
 import piece.ChessPiece;
@@ -20,6 +21,13 @@ public class ChessBoardImpl implements ChessBoard {
     board = new ChessPiece[8][8];
     initBoard(0, 1, false);
     initBoard(7, -1, true);
+    whiteKingPos = getKingPos(true);
+    blackKingPos = getKingPos(false);
+  }
+
+  public ChessBoardImpl(ChessBoard board) {
+    ChessBoardImpl otherBoard = (ChessBoardImpl)board;
+    this.board = deepClone(otherBoard.board);
     whiteKingPos = getKingPos(true);
     blackKingPos = getKingPos(false);
   }
@@ -86,7 +94,8 @@ public class ChessBoardImpl implements ChessBoard {
         if (board[r][c] != null && side != board[r][c].side()) {
           List<Move> attackMoves = board[r][c].getAttackMoves(board);
           for (Move move : attackMoves) {
-            if (kingPos.r == move.toR && kingPos.c == move.toC) {
+            if (kingPos.r ==
+                    move.toR && kingPos.c == move.toC) {
               return true;
             }
           }
@@ -153,5 +162,23 @@ public class ChessBoardImpl implements ChessBoard {
         System.out.print("\n");
       }
     }
+  }
+
+  @Override
+  public List<Move> getLegalMoves(boolean side) {
+    List<Move> legalMoves = new ArrayList<>();
+    for (int r = 0; r < 8; r++) {
+      for (int c = 0; c < 8; c++) {
+        if (board[r][c] != null && board[r][c].side() == side) {
+          legalMoves.addAll(board[r][c].getLegalMoves(board));
+        }
+      }
+    }
+    return legalMoves;
+  }
+
+  @Override
+  public ChessPiece[][] getBoard() {
+    return board;
   }
 }

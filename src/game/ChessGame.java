@@ -6,4 +6,6 @@ public interface ChessGame {
   void makeComputerMove();
 
   void display();
+
+  boolean isOver();
 }

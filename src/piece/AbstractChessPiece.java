@@ -35,11 +35,13 @@ public abstract class AbstractChessPiece implements ChessPiece {
     r = toR;
     c = toC;
     cachedLegalMoves = null;
+    cachedAttackMoves = null;
   }
 
   @Override
   public void updatePieceNotMoved(int toR, int toC) {
     cachedLegalMoves = null;
+    cachedAttackMoves = null;
   }
 
   @Override

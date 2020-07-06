@@ -25,7 +25,8 @@ public class King extends AbstractChessPiece implements ChessPiece {
     Pos[] neighbors = {new Pos(r+1, c), new Pos(r-1, c), new Pos(r, c+1), new Pos(r, c-1),
             new Pos(r+1, c+1), new Pos(r-1, c-1), new Pos(r+1, c-1), new Pos(r-1, c+1)};
     for (Pos pos : neighbors) {
-      if (board[pos.r][pos.c] == null || side() != board[pos.r][pos.c].side()) {
+      if (Utils.inBounds(pos.r, pos.c) && (board[pos.r][pos.c] == null
+              || side() != board[pos.r][pos.c].side())) {
         legalMovesIgnoringChecks.add(new Move(r, c, pos.r, pos.c));
       }
     }

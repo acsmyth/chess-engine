@@ -47,5 +47,11 @@ public class Move {
         board[toR][toC - 2] = null;
       }
     }
+    // TODO - have to update the r,c of the rook after castling too
+  }
+
+  @Override
+  public String toString() {
+    return fromR + " " + fromC + " --> " + toR + " " + toC;
   }
 }

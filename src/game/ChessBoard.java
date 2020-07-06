@@ -1,5 +1,8 @@
 package game;
 
+import java.util.List;
+
+import piece.ChessPiece;
 import piece.Move;
 
 public interface ChessBoard {
@@ -10,4 +13,8 @@ public interface ChessBoard {
   void makeMove(Move move);
 
   void display();
+
+  List<Move> getLegalMoves(boolean side);
+
+  ChessPiece[][] getBoard();
 }
