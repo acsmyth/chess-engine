@@ -2,7 +2,6 @@ package piece;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import util.Utils;
@@ -31,7 +30,7 @@ public class Pawn extends AbstractChessPiece implements ChessPiece {
   public void updatePieceMoved(int toR, int toC) {
     hasMoved = true;
     justAdvancedTwoSquares = r - toR == 2 * sideAsInt();
-    super.updatePieceMoved(r, c);
+    super.updatePieceMoved(toR, toC);
   }
 
   @Override
@@ -52,17 +51,17 @@ public class Pawn extends AbstractChessPiece implements ChessPiece {
       legalMoves.add(new Move(r, c, r - 2 * sideAsInt(), c));
     }
     if (Utils.inBounds(r - sideAsInt(), c - 1)
-            && (board[r - sideAsInt()][c - 1] != null
+            && ((board[r - sideAsInt()][c - 1] != null
             && side() != board[r - sideAsInt()][c - 1].side())
             || (board[r][c - 1] != null && side() != board[r][c - 1].side()
-            && board[r][c - 1] instanceof Pawn && ((Pawn)board[r][c - 1]).justAdvancedTwoSquares)) {
+            && board[r][c - 1] instanceof Pawn && ((Pawn)board[r][c - 1]).justAdvancedTwoSquares))) {
       legalMoves.add(new Move(r, c, r - sideAsInt(), c - 1));
     }
     if (Utils.inBounds(r - sideAsInt(), c - 1)
-            && (board[r - sideAsInt()][c + 1] != null
+            && ((board[r - sideAsInt()][c + 1] != null
             && side() != board[r - sideAsInt()][c + 1].side())
             || (board[r][c + 1] != null && side() != board[r][c + 1].side()
-            && board[r][c + 1] instanceof Pawn && ((Pawn)board[r][c + 1]).justAdvancedTwoSquares)) {
+            && board[r][c + 1] instanceof Pawn && ((Pawn)board[r][c + 1]).justAdvancedTwoSquares))) {
       legalMoves.add(new Move(r, c, r - sideAsInt(), c + 1));
     }
     return legalMoves;
@@ -75,5 +74,9 @@ public class Pawn extends AbstractChessPiece implements ChessPiece {
             new Move(r, c, r - sideAsInt(), c + 1)));
     potentialAttackMoves.removeIf(move -> !Utils.inBounds(move.toR, move.toC));
     return potentialAttackMoves;
+  }
+
+  public boolean justAdvancedTwoSquares() {
+    return justAdvancedTwoSquares;
   }
 }

@@ -13,8 +13,8 @@ import util.Pos;
 
 public class ChessBoardImpl implements ChessBoard {
   private final ChessPiece[][] board;
-  private final Pos whiteKingPos;
-  private final Pos blackKingPos;
+  private Pos whiteKingPos;
+  private Pos blackKingPos;
 
   public ChessBoardImpl() {
     board = new ChessPiece[8][8];
@@ -83,7 +83,7 @@ public class ChessBoardImpl implements ChessBoard {
     Pos kingPos = side ? whiteKingPos : blackKingPos;
     for (int r = 0; r < 8; r++) {
       for (int c = 0; c < 8; c++) {
-        if (board[r][c] != null) {
+        if (board[r][c] != null && side != board[r][c].side()) {
           List<Move> attackMoves = board[r][c].getAttackMoves(board);
           for (Move move : attackMoves) {
             if (kingPos.r == move.toR && kingPos.c == move.toC) {
@@ -115,11 +115,22 @@ public class ChessBoardImpl implements ChessBoard {
 
   private void updateBoard(Move move) {
     board[move.toR][move.toC].updatePieceMoved(move.toR, move.toC);
+    updateKingPos(move);
     for (int r = 0; r < 8; r++) {
       for (int c = 0; c < 8; c++) {
-        if (r != move.toR && c != move.toC && board[r][c] != null) {
+        if (board[r][c] != null && r != move.toR && c != move.toC) {
           board[r][c].updatePieceNotMoved(r, c);
         }
+      }
+    }
+  }
+
+  private void updateKingPos(Move move) {
+    if (board[move.toR][move.toC] instanceof King) {
+      if (board[move.toR][move.toC].side()) {
+        whiteKingPos = new Pos(move.toR, move.toC);
+      } else {
+        blackKingPos = new Pos(move.toR, move.toC);
       }
     }
   }

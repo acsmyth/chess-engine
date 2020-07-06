@@ -7,20 +7,12 @@ public class Move {
   public final int fromC;
   public final int toR;
   public final int toC;
-  private final boolean enPassantMove;
-  private final boolean castleMove;
 
   public Move(int fromR, int fromC, int toR, int toC) {
-    this(fromR, fromC, toR, toC, false, false);
-  }
-
-  public Move(int fromR, int fromC, int toR, int toC, boolean enPassantMove, boolean castleMove) {
     this.fromR = fromR;
     this.fromC = fromC;
     this.toR = toR;
     this.toC = toC;
-    this.enPassantMove = enPassantMove;
-    this.castleMove = castleMove;
   }
 
   @Override
@@ -41,9 +33,12 @@ public class Move {
     board[toR][toC] = board[fromR][fromC];
     board[fromR][fromC] = null;
 
-    if (enPassantMove) {
+    if (board[toR][toC] instanceof Pawn
+            && board[fromR][toC] instanceof Pawn
+            && board[toR][toC].side() != board[fromR][toC].side()
+            && ((Pawn)board[fromR][toC]).justAdvancedTwoSquares()) {
       board[fromR][toC] = null;
-    } else if (castleMove) {
+    } else if (board[toR][toC] instanceof King && Math.abs(toR - fromR) > 1) {
       if (Utils.inBounds(toR, toC + 1) && board[toR][toC + 1] instanceof Rook) {
         board[toR][toC - 1] = board[toR][toC + 1];
         board[toR][toC + 1] = null;

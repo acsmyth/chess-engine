@@ -7,6 +7,8 @@ public class Main {
     game.makeMove(6, 4, 4, 4);
     game.makeMove(1, 0, 2, 0);
     game.makeMove(4, 4, 3, 4);
+    game.makeMove(1, 3, 3, 3);
+    game.makeMove(3, 4, 2, 3);
     game.display();
 
     // TODO
