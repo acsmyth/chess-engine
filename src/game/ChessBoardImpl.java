@@ -34,7 +34,9 @@ public class ChessBoardImpl implements ChessBoard {
     ChessPiece[][] newArr = new ChessPiece[arr.length][arr[0].length];
     for (int i = 0; i < arr.length; i++) {
       for (int p = 0; p < arr[0].length; p++) {
-        newArr[i][p] = arr[i][p].copy();
+        if (arr[i][p] != null) {
+          newArr[i][p] = arr[i][p].copy();
+        }
       }
     }
     return newArr;
@@ -65,7 +67,6 @@ public class ChessBoardImpl implements ChessBoard {
       return false;
     }
     // now, delegate to the piece to make sure its a valid move format of the piece
-    // finally, check that the move doesn't lead the moving side's king to be in check
     return board[fromRow][fromCol].isLegalMove(toRow, toCol, board);
   }
 
@@ -85,7 +86,7 @@ public class ChessBoardImpl implements ChessBoard {
     board[toRow][toCol].updatePieceMoved(toRow, toCol);
     for (int r = 0; r < 8; r++) {
       for (int c = 0; c < 8; c++) {
-        if (r != toRow && c != toCol) {
+        if (r != toRow && c != toCol && board[r][c] != null) {
           board[r][c].updatePieceNotMoved(r, c);
         }
       }
@@ -124,5 +125,25 @@ public class ChessBoardImpl implements ChessBoard {
   @Override
   public void makeMove(Move move) {
     makeMove(move.fromR, move.fromC, move.toR, move.toC);
+  }
+
+  @Override
+  public void display() {
+    for (int r = 0; r < 8; r++) {
+      for (int c = 0; c < 8; c++) {
+        if (board[r][c] == null) {
+          System.out.print("\u001B[37m" + "☐" + "\u001B[0m");
+        } else {
+          System.out.print((board[r][c].side() ? "\u001B[34m" : "\u001B[31m")
+                  + board[r][c].display() + "\u001B[0m");
+        }
+        if (c < 7) {
+          System.out.print(" ");
+        }
+      }
+      if (r < 7) {
+        System.out.print("\n");
+      }
+    }
   }
 }

@@ -12,12 +12,14 @@ public class King extends AbstractChessPiece implements ChessPiece {
 
   @Override
   protected boolean isLegalMoveIgnoringChecks(int toRow, int toCol, ChessPiece[][] board) {
+    // TODO - castling
     return toRow >= r - 1 && toRow <= r + 1
             && toCol >= c - 1 && toCol <= c + 1;
   }
 
   @Override
   protected List<Move> calculateLegalMovesIgnoringChecks(ChessPiece[][] board) {
+    // TODO - castling
     List<Move> legalMovesIgnoringChecks = new ArrayList<>();
     Pos[] neighbors = {new Pos(r+1, c), new Pos(r-1, c), new Pos(r, c+1), new Pos(r, c-1),
             new Pos(r+1, c+1), new Pos(r-1, c-1), new Pos(r+1, c-1), new Pos(r-1, c+1)};
@@ -39,5 +41,10 @@ public class King extends AbstractChessPiece implements ChessPiece {
   @Override
   public ChessPiece create(int r, int c, boolean isWhitePiece) {
     return new King(r, c, isWhitePiece);
+  }
+
+  @Override
+  public String display() {
+    return "K";
   }
 }

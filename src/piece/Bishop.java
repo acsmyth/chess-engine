@@ -2,6 +2,7 @@ package piece;
 
 import java.util.ArrayList;
 import java.util.List;
+import util.DynamicChessPieceUtils;
 
 public class Bishop extends AbstractChessPiece implements ChessPiece {
   public Bishop(int r, int c, boolean isWhitePiece) {
@@ -19,32 +20,28 @@ public class Bishop extends AbstractChessPiece implements ChessPiece {
   }
 
   @Override
+  public String display() {
+    return "B";
+  }
+
+  @Override
   public List<Move> calculateLegalMovesIgnoringChecks(ChessPiece[][] board) {
-    if (cachedLegalMoves != null) return cachedLegalMoves;
     List<Move> newLegalMoves = new ArrayList<>();
-    addMoves(-1, -1, board, newLegalMoves);
-    addMoves(1, -1, board, newLegalMoves);
-    addMoves(-1, 1, board, newLegalMoves);
-    addMoves(1, 1, board, newLegalMoves);
-    cachedLegalMoves = newLegalMoves;
+    addMoves(board, newLegalMoves, false);
     return newLegalMoves;
   }
 
-  private void addMoves(int rowInc, int colInc, ChessPiece[][] board, List<Move> newLegalMoves) {
-    int i = r + rowInc;
-    int p = c + colInc;
-    while (inBounds(i, p) && board[i][i] == null) {
-      newLegalMoves.add(new Move(r, c, i, p));
-      i += rowInc;
-      p += colInc;
-    }
-    if (inBounds(i, p) && side() != board[i][i].side()) {
-      newLegalMoves.add(new Move(r, c, i, p));
-    }
+  private void addMoves(ChessPiece[][] board, List<Move> moves, boolean includeAttackMoves) {
+    DynamicChessPieceUtils.addMoves(side(), r, c, -1, -1, board, moves, includeAttackMoves);
+    DynamicChessPieceUtils.addMoves(side(), r, c, 1, -1, board, moves, includeAttackMoves);
+    DynamicChessPieceUtils.addMoves(side(), r, c, -1, 1, board, moves, includeAttackMoves);
+    DynamicChessPieceUtils.addMoves(side(), r, c, 1, 1, board, moves, includeAttackMoves);
   }
 
   @Override
   protected List<Move> calculateAttackMoves(ChessPiece[][] board) {
-    return null;
+    List<Move> newAttackMoves = new ArrayList<>();
+    addMoves(board, newAttackMoves, true);
+    return newAttackMoves;
   }
 }

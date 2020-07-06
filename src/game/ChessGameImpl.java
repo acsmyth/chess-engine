@@ -1,12 +1,18 @@
 package game;
 
+import bot.Bot;
+import bot.SimpleMinimaxBot;
+import piece.Move;
+
 public class ChessGameImpl implements ChessGame {
   private final ChessBoard board;
   private boolean whiteTurn;
+  private final Bot engine;
 
   public ChessGameImpl() {
     board = new ChessBoardImpl();
     whiteTurn = true;
+    engine = new SimpleMinimaxBot();
   }
 
   @Override
@@ -19,6 +25,12 @@ public class ChessGameImpl implements ChessGame {
 
   @Override
   public void makeComputerMove() {
-    // TODO
+    Move computerMove = engine.chooseMove(board, whiteTurn);
+    board.makeMove(computerMove);
+  }
+
+  @Override
+  public void display() {
+    board.display();
   }
 }

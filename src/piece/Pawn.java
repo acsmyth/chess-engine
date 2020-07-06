@@ -2,7 +2,10 @@ package piece;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
+
+import util.Utils;
 
 public class Pawn extends AbstractChessPiece implements ChessPiece {
   private boolean hasMoved;
@@ -16,22 +19,7 @@ public class Pawn extends AbstractChessPiece implements ChessPiece {
 
   @Override
   protected boolean isLegalMoveIgnoringChecks(int toRow, int toCol, ChessPiece[][] board) {
-    ChessPiece toPiece = board[toRow][toCol];
-    if (c == toCol) {
-      // if moving forward, must be no piece in either spot
-      return (r - toRow == sideAsInt() && toPiece == null)
-              ||
-              (r - toRow == 2 * sideAsInt() && toPiece == null
-              && board[toRow - sideAsInt()][toCol] == null);
-    } else {
-      // opposite side piece must be there
-      return (r - toRow == sideAsInt() && Math.abs(c - toCol) == 1
-              && toPiece != null && side() != toPiece.side())
-              ||
-              (board[r][toCol] != null && side() != board[r][toCol].side()
-                      && board[r][toCol] instanceof Pawn
-                      && ((Pawn)board[r][toCol]).justAdvancedTwoSquares);
-    }
+    return getLegalMoves(board).contains(new Move(r, c, toRow, toCol));
   }
 
   @Override
@@ -47,21 +35,32 @@ public class Pawn extends AbstractChessPiece implements ChessPiece {
   }
 
   @Override
+  public String display() {
+    return "P";
+  }
+
+  @Override
   public List<Move> calculateLegalMovesIgnoringChecks(ChessPiece[][] board) {
     List<Move> legalMoves = new ArrayList<>();
-    if (board[r - sideAsInt()][c] == null) {
+    if (Utils.inBounds(r - sideAsInt(), c)
+            && board[r - sideAsInt()][c] == null) {
       legalMoves.add(new Move(r, c, r - sideAsInt(), c));
     }
-    if (board[r - sideAsInt()][c] == null && board[r - 2 * sideAsInt()][c] == null
+    if (Utils.inBounds(r - sideAsInt(), c) && Utils.inBounds(r - 2 * sideAsInt(), c)
+            && board[r - sideAsInt()][c] == null && board[r - 2 * sideAsInt()][c] == null
             && !hasMoved) {
       legalMoves.add(new Move(r, c, r - 2 * sideAsInt(), c));
     }
-    if ((board[r - sideAsInt()][c - 1] != null && side() != board[r - sideAsInt()][c - 1].side())
+    if (Utils.inBounds(r - sideAsInt(), c - 1)
+            && (board[r - sideAsInt()][c - 1] != null
+            && side() != board[r - sideAsInt()][c - 1].side())
             || (board[r][c - 1] != null && side() != board[r][c - 1].side()
             && board[r][c - 1] instanceof Pawn && ((Pawn)board[r][c - 1]).justAdvancedTwoSquares)) {
       legalMoves.add(new Move(r, c, r - sideAsInt(), c - 1));
     }
-    if ((board[r - sideAsInt()][c + 1] != null && side() != board[r - sideAsInt()][c + 1].side())
+    if (Utils.inBounds(r - sideAsInt(), c - 1)
+            && (board[r - sideAsInt()][c + 1] != null
+            && side() != board[r - sideAsInt()][c + 1].side())
             || (board[r][c + 1] != null && side() != board[r][c + 1].side()
             && board[r][c + 1] instanceof Pawn && ((Pawn)board[r][c + 1]).justAdvancedTwoSquares)) {
       legalMoves.add(new Move(r, c, r - sideAsInt(), c + 1));
@@ -71,8 +70,15 @@ public class Pawn extends AbstractChessPiece implements ChessPiece {
 
   @Override
   protected List<Move> calculateAttackMoves(ChessPiece[][] board) {
-    return Arrays.asList(
+    List<Move> potentialAttackMoves = Arrays.asList(
             new Move(r, c, r - sideAsInt(), c - 1),
             new Move(r, c, r - sideAsInt(), c + 1));
+    Iterator<Move> it = potentialAttackMoves.iterator();
+    while (it.hasNext()) {
+      if (!Utils.inBounds(r, c)) {
+        it.remove();
+      }
+    }
+    return potentialAttackMoves;
   }
 }

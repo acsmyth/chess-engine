@@ -16,16 +16,27 @@ public class Knight extends AbstractChessPiece implements ChessPiece {
 
   @Override
   protected List<Move> calculateLegalMovesIgnoringChecks(ChessPiece[][] board) {
-    return null;
+    List<Move> potentialLegalMoves = getAttackMoves(board);
+    potentialLegalMoves.removeIf(move -> !inBounds(move.toR, move.toC)
+            || (board[move.toR][move.toC] != null
+            && side() == board[move.toR][move.toC].side()));
+    return potentialLegalMoves;
   }
 
   @Override
   protected List<Move> calculateAttackMoves(ChessPiece[][] board) {
-    return Arrays.asList(new Move(r, c, r-1, c-2));
+    return Arrays.asList(new Move(r, c, r-1, c-2), new Move(r, c, r+1, c-2),
+            new Move(r, c, r-1, c+2), new Move(r, c, r+1, c+2), new Move(r, c, r-2, c+1),
+            new Move(r, c, r+2, c+1), new Move(r, c, r-2, c-1), new Move(r, c, r+2, c-1));
   }
 
   @Override
   public ChessPiece create(int r, int c, boolean isWhitePiece) {
     return new Knight(r, c, isWhitePiece);
+  }
+
+  @Override
+  public String display() {
+    return "N";
   }
 }

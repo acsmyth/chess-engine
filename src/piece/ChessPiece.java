@@ -20,4 +20,6 @@ public interface ChessPiece extends Cloneable {
   List<Move> getLegalMoves(ChessPiece[][] board);
 
   List<Move> getAttackMoves(ChessPiece[][] board);
+
+  String display();
 }

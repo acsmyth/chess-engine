@@ -10,4 +10,6 @@ public interface ChessBoard {
   boolean kingIsInCheck(boolean side);
 
   void makeMove(Move move);
+
+  void display();
 }

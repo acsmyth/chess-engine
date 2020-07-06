@@ -44,12 +44,13 @@ public abstract class AbstractChessPiece implements ChessPiece {
 
   @Override
   public boolean isLegalMove(int toR, int toC, ChessPiece[][] board) {
+    if (!isLegalMoveIgnoringChecks(toR, toC, board)) return false;
     ChessBoard newBoard = new ChessBoardImpl(board);
     newBoard.makeMove(r, c, toR, toC);
-    return isLegalMoveIgnoringChecks(toR, toC, board) && newBoard.kingIsInCheck(side());
+    return !newBoard.kingIsInCheck(side());
   }
 
-  abstract protected boolean isLegalMoveIgnoringChecks(int toRow, int toCol, ChessPiece[][] board);
+  abstract protected boolean isLegalMoveIgnoringChecks(int toR, int toC, ChessPiece[][] board);
 
   @Override
   public ChessPiece copy() {
