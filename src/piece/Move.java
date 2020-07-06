@@ -1,5 +1,7 @@
 package piece;
 
+import util.Utils;
+
 public class Move {
   public final int fromR;
   public final int fromC;
@@ -42,7 +44,13 @@ public class Move {
     if (enPassantMove) {
       board[fromR][toC] = null;
     } else if (castleMove) {
-      
+      if (Utils.inBounds(toR, toC + 1) && board[toR][toC + 1] instanceof Rook) {
+        board[toR][toC - 1] = board[toR][toC + 1];
+        board[toR][toC + 1] = null;
+      } else {
+        board[toR][toC + 1] = board[toR][toC - 2];
+        board[toR][toC - 2] = null;
+      }
     }
   }
 }
