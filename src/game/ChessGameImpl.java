@@ -16,9 +16,9 @@ public class ChessGameImpl implements ChessGame {
   }
 
   @Override
-  public void makeMove(int fromCol, int fromRow, int toCol, int toRow) {
-    if (board.isLegalMove(fromCol, fromRow, toCol, toRow, whiteTurn)) {
-      board.makeMove(fromCol, fromRow, toCol, toRow);
+  public void makeMove(int fromR, int fromC, int toR, int toC) {
+    if (board.isLegalMove(fromR, fromC, toR, toC, whiteTurn)) {
+      board.makeMove(new Move(fromR, fromC, toR, toC));
       whiteTurn = !whiteTurn;
     }
   }

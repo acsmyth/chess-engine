@@ -1,7 +1,7 @@
 package game;
 
 public interface ChessGame {
-  void makeMove(int fromCol, int fromRow, int toCol, int toRow);
+  void makeMove(int fromR, int fromC, int toR, int toC);
 
   void makeComputerMove();
 

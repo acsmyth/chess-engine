@@ -5,12 +5,20 @@ public class Move {
   public final int fromC;
   public final int toR;
   public final int toC;
+  private final boolean enPassantMove;
+  private final boolean castleMove;
 
   public Move(int fromR, int fromC, int toR, int toC) {
+    this(fromR, fromC, toR, toC, false, false);
+  }
+
+  public Move(int fromR, int fromC, int toR, int toC, boolean enPassantMove, boolean castleMove) {
     this.fromR = fromR;
     this.fromC = fromC;
     this.toR = toR;
     this.toC = toC;
+    this.enPassantMove = enPassantMove;
+    this.castleMove = castleMove;
   }
 
   @Override
@@ -25,5 +33,16 @@ public class Move {
   @Override
   public int hashCode() {
     return Integer.hashCode(fromR + fromC + toR + toC);
+  }
+
+  public void execute(ChessPiece[][] board) {
+    board[toR][toC] = board[fromR][fromC];
+    board[fromR][fromC] = null;
+
+    if (enPassantMove) {
+      board[fromR][toC] = null;
+    } else if (castleMove) {
+      
+    }
   }
 }

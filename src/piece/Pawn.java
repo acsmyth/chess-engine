@@ -75,7 +75,7 @@ public class Pawn extends AbstractChessPiece implements ChessPiece {
             new Move(r, c, r - sideAsInt(), c + 1));
     Iterator<Move> it = potentialAttackMoves.iterator();
     while (it.hasNext()) {
-      if (!Utils.inBounds(r, c)) {
+        if (!Utils.inBounds(r, c)) {
         it.remove();
       }
     }

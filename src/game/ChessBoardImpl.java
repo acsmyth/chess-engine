@@ -79,21 +79,6 @@ public class ChessBoardImpl implements ChessBoard {
   }
 
   @Override
-  public void makeMove(int fromRow, int fromCol, int toRow, int toCol) {
-    board[toRow][toCol] = board[fromRow][fromCol];
-    board[fromRow][fromCol] = null;
-
-    board[toRow][toCol].updatePieceMoved(toRow, toCol);
-    for (int r = 0; r < 8; r++) {
-      for (int c = 0; c < 8; c++) {
-        if (r != toRow && c != toCol && board[r][c] != null) {
-          board[r][c].updatePieceNotMoved(r, c);
-        }
-      }
-    }
-  }
-
-  @Override
   public boolean kingIsInCheck(boolean side) {
     Pos kingPos = side ? whiteKingPos : blackKingPos;
     for (int r = 0; r < 8; r++) {
@@ -124,7 +109,19 @@ public class ChessBoardImpl implements ChessBoard {
 
   @Override
   public void makeMove(Move move) {
-    makeMove(move.fromR, move.fromC, move.toR, move.toC);
+    move.execute(board);
+    updateBoard(move);
+  }
+
+  private void updateBoard(Move move) {
+    board[move.toR][move.toC].updatePieceMoved(move.toR, move.toC);
+    for (int r = 0; r < 8; r++) {
+      for (int c = 0; c < 8; c++) {
+        if (r != move.toR && c != move.toC && board[r][c] != null) {
+          board[r][c].updatePieceNotMoved(r, c);
+        }
+      }
+    }
   }
 
   @Override

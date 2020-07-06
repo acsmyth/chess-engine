@@ -46,7 +46,7 @@ public abstract class AbstractChessPiece implements ChessPiece {
   public boolean isLegalMove(int toR, int toC, ChessPiece[][] board) {
     if (!isLegalMoveIgnoringChecks(toR, toC, board)) return false;
     ChessBoard newBoard = new ChessBoardImpl(board);
-    newBoard.makeMove(r, c, toR, toC);
+    newBoard.makeMove(new Move(r, c, toR, toC));
     return !newBoard.kingIsInCheck(side());
   }
 
