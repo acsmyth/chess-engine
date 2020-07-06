@@ -1,5 +1,6 @@
 package piece;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -25,9 +26,12 @@ public class Knight extends AbstractChessPiece implements ChessPiece {
 
   @Override
   protected List<Move> calculateAttackMoves(ChessPiece[][] board) {
-    return Arrays.asList(new Move(r, c, r-1, c-2), new Move(r, c, r+1, c-2),
-            new Move(r, c, r-1, c+2), new Move(r, c, r+1, c+2), new Move(r, c, r-2, c+1),
-            new Move(r, c, r+2, c+1), new Move(r, c, r-2, c-1), new Move(r, c, r+2, c-1));
+    List<Move> potentialAttackMoves = new ArrayList<>(Arrays.asList(new Move(r, c, r-1, c-2),
+            new Move(r, c, r+1, c-2), new Move(r, c, r-1, c+2), new Move(r, c, r+1, c+2),
+            new Move(r, c, r-2, c+1), new Move(r, c, r+2, c+1), new Move(r, c, r-2, c-1),
+            new Move(r, c, r+2, c-1)));
+    potentialAttackMoves.removeIf(move -> !inBounds(move.toR, move.toC));
+    return potentialAttackMoves;
   }
 
   @Override

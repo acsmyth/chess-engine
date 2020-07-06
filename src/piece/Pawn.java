@@ -70,15 +70,10 @@ public class Pawn extends AbstractChessPiece implements ChessPiece {
 
   @Override
   protected List<Move> calculateAttackMoves(ChessPiece[][] board) {
-    List<Move> potentialAttackMoves = Arrays.asList(
+    List<Move> potentialAttackMoves = new ArrayList<>(Arrays.asList(
             new Move(r, c, r - sideAsInt(), c - 1),
-            new Move(r, c, r - sideAsInt(), c + 1));
-    Iterator<Move> it = potentialAttackMoves.iterator();
-    while (it.hasNext()) {
-        if (!Utils.inBounds(r, c)) {
-        it.remove();
-      }
-    }
+            new Move(r, c, r - sideAsInt(), c + 1)));
+    potentialAttackMoves.removeIf(move -> !Utils.inBounds(move.toR, move.toC));
     return potentialAttackMoves;
   }
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import util.Pos;
+import util.Utils;
 
 public class King extends AbstractChessPiece implements ChessPiece {
   public King(int r, int c, boolean isWhitePiece) {
@@ -33,9 +34,12 @@ public class King extends AbstractChessPiece implements ChessPiece {
 
   @Override
   protected List<Move> calculateAttackMoves(ChessPiece[][] board) {
-    return Arrays.asList(new Move(r, c, r+1, c), new Move(r, c, r-1, c), new Move(r, c, r, c+1),
+    List<Move> potentialAttackMoves = new ArrayList<>(Arrays.asList(new Move(r, c, r+1, c),
+            new Move(r, c, r-1, c), new Move(r, c, r, c+1),
             new Move(r, c, r, c-1), new Move(r, c, r+1, c+1), new Move(r, c, r-1, c-1),
-            new Move(r, c, r+1, c-1), new Move(r, c, r-1, c+1));
+            new Move(r, c, r+1, c-1), new Move(r, c, r-1, c+1)));
+    potentialAttackMoves.removeIf(move -> !Utils.inBounds(move.toR, move.toC));
+    return potentialAttackMoves;
   }
 
   @Override

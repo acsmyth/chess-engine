@@ -4,7 +4,6 @@ import game.ChessGameImpl;
 public class Main {
   public static void main(String[] args) {
     ChessGame game = new ChessGameImpl();
-    //System.out.println(game.display());
     game.makeMove(6, 4, 4, 4);
     game.makeMove(1, 0, 2, 0);
     game.makeMove(4, 4, 3, 4);
