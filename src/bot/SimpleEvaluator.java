@@ -11,7 +11,7 @@ public class SimpleEvaluator implements Evaluator {
     for (int r=0;r<8;r++) {
       for (int c=0;c<8;c++) {
         if (brd[r][c] != null) {
-          int valChange = 0;
+          double valChange = 0;
           switch (brd[r][c].getClass().getSimpleName()) {
             case "Pawn":
               valChange = 1;

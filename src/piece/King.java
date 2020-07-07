@@ -7,8 +7,11 @@ import util.Pos;
 import util.Utils;
 
 public class King extends AbstractChessPiece implements ChessPiece {
+  private boolean hasMoved;
+
   public King(int r, int c, boolean isWhitePiece) {
     super(r, c, isWhitePiece);
+    hasMoved = false;
   }
 
   @Override
@@ -51,5 +54,10 @@ public class King extends AbstractChessPiece implements ChessPiece {
   @Override
   public String display() {
     return "K";
+  }
+
+  @Override
+  public int hashCode() {
+    return Integer.hashCode(hasMoved ? 10 : -10);
   }
 }

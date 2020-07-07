@@ -5,8 +5,11 @@ import java.util.List;
 import util.DynamicChessPieceUtils;
 
 public class Rook extends AbstractChessPiece implements ChessPiece {
+  private boolean hasMoved;
+
   public Rook(int r, int c, boolean isWhitePiece) {
     super(r, c, isWhitePiece);
+    hasMoved = false;
   }
 
   @Override
@@ -45,5 +48,10 @@ public class Rook extends AbstractChessPiece implements ChessPiece {
   @Override
   public String display() {
     return "R";
+  }
+
+  @Override
+  public int hashCode() {
+    return Integer.hashCode(hasMoved ? 10 : -10);
   }
 }

@@ -79,4 +79,9 @@ public class Pawn extends AbstractChessPiece implements ChessPiece {
   public boolean justAdvancedTwoSquares() {
     return justAdvancedTwoSquares;
   }
+
+  @Override
+  public int hashCode() {
+    return Integer.hashCode((hasMoved ? 10 : -10) + (justAdvancedTwoSquares ? 5 : -5));
+  }
 }

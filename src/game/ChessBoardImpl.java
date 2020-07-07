@@ -2,6 +2,8 @@ package game;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
 import piece.Bishop;
 import piece.ChessPiece;
 import piece.King;
@@ -94,8 +96,7 @@ public class ChessBoardImpl implements ChessBoard {
         if (board[r][c] != null && side != board[r][c].side()) {
           List<Move> attackMoves = board[r][c].getAttackMoves(board);
           for (Move move : attackMoves) {
-            if (kingPos.r ==
-                    move.toR && kingPos.c == move.toC) {
+            if (kingPos == null || (kingPos.r == move.toR && kingPos.c == move.toC)) {
               return true;
             }
           }
@@ -180,5 +181,69 @@ public class ChessBoardImpl implements ChessBoard {
   @Override
   public ChessPiece[][] getBoard() {
     return board;
+  }
+
+  @Override
+  public int hashCode() {
+    Random ran = new Random(50);
+    int[] keys = new int[7];
+    for (int i=0;i<7;i++) {
+      keys[i] = ran.nextInt();
+    }
+    int hashCode = ran.nextInt();
+    for (int r=0;r<8;r++) {
+      for (int c=0;c<8;c++) {
+        int type = -1;
+        if (board[r][c] == null) {
+          type = 0;
+        } else {
+          switch(board[r][c].getClass().getSimpleName()) {
+            case "Pawn":
+              type = 1;
+              break;
+            case "Knight":
+              type = 2;
+              break;
+            case "Bishop":
+              type = 3;
+              break;
+            case "Rook":
+              type = 4;
+              break;
+            case "Queen":
+              type = 5;
+              break;
+            case "King":
+              type = 6;
+              break;
+          }
+        }
+        int pieceInfo = board[r][c] == null ? 0 : board[r][c].hashCode();
+        hashCode ^= keys[type] ^ Integer.hashCode(100*r + c + pieceInfo);
+      }
+    }
+    return hashCode;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof ChessBoardImpl)) return false;
+    ChessPiece[][] other = ((ChessBoardImpl)o).getBoard();
+    for (int r=0;r<8;r++) {
+      for (int c=0;c<8;c++) {
+        if ((board[r][c] == null && board[r][c] != null)
+                || (board[r][c] != null && other[r][c] == null)) {
+          return false;
+        } else if (board[r][c] != null) {
+          // neither are null
+          if (!board[r][c].getClass().equals(other[r][c].getClass())
+                  || board[r][c].hashCode() != other[r][c].hashCode()) {
+            return false;
+          }
+        }
+      }
+    }
+    return true;
   }
 }

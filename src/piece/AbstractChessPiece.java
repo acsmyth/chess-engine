@@ -93,4 +93,9 @@ public abstract class AbstractChessPiece implements ChessPiece {
   protected abstract List<Move> calculateLegalMovesIgnoringChecks(ChessPiece[][] board);
 
   protected abstract List<Move> calculateAttackMoves(ChessPiece[][] board);
+
+  @Override
+  public int hashCode() {
+    return Integer.hashCode(isWhitePiece ? 10 : -10);
+  }
 }
