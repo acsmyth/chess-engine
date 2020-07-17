@@ -157,18 +157,18 @@ public class ChessBoardImpl implements ChessBoard {
                   + board[r][c].display() + "\u001B[0m");
         }
         if (c < 7) {
-          System.out.print(" ");
+          System.out.print("  ");
         }
       }
       if (r < 7) {
         System.out.print("\n");
       }
     }
-    System.out.print("\n    ");
+    System.out.print("\n\n    ");
     for (int c = 0; c < 8; c++) {
       System.out.print(c);
       if (c < 7) {
-        System.out.print(" ");
+        System.out.print("  ");
       }
     }
   }

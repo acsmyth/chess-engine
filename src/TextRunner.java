@@ -13,7 +13,7 @@ import piece.Pawn;
 import piece.Queen;
 import piece.Rook;
 
-public class Main {
+public class TextRunner {
   public static void main(String[] args) {
     ChessGame game = new ChessGameImpl();
     game.display();
