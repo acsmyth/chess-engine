@@ -128,7 +128,7 @@ public class ChessBoardImpl implements ChessBoard {
     updateKingPos(move);
     for (int r = 0; r < 8; r++) {
       for (int c = 0; c < 8; c++) {
-        if (board[r][c] != null && r != move.toR && c != move.toC) {
+        if (board[r][c] != null && (r != move.toR || c != move.toC)) {
           board[r][c].updatePieceNotMoved(r, c);
         }
       }
@@ -148,6 +148,7 @@ public class ChessBoardImpl implements ChessBoard {
   @Override
   public void display() {
     for (int r = 0; r < 8; r++) {
+      System.out.print(r + "   ");
       for (int c = 0; c < 8; c++) {
         if (board[r][c] == null) {
           System.out.print("\u001B[37m" + "☐" + "\u001B[0m");
@@ -161,6 +162,13 @@ public class ChessBoardImpl implements ChessBoard {
       }
       if (r < 7) {
         System.out.print("\n");
+      }
+    }
+    System.out.print("\n    ");
+    for (int c = 0; c < 8; c++) {
+      System.out.print(c);
+      if (c < 7) {
+        System.out.print(" ");
       }
     }
   }

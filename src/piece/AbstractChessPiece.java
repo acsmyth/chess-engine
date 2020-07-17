@@ -18,6 +18,7 @@ public abstract class AbstractChessPiece implements ChessPiece {
     this.c = c;
     this.isWhitePiece = isWhitePiece;
     cachedLegalMoves = null;
+    cachedAttackMoves = null;
   }
 
   @Override

@@ -9,6 +9,7 @@ import game.ChessBoardImpl;
 import piece.Move;
 
 public class SimpleMinimaxBot implements Bot {
+
   @Override
   public Move chooseMove(ChessBoard board, boolean turn) {
     Move chosenMove = minimax(board, turn, 4, new HashMap<>()).move;
@@ -17,29 +18,34 @@ public class SimpleMinimaxBot implements Bot {
 
   MoveEvalPair minimax(ChessBoard board, boolean turn, int depthLeft,
                        Map<ChessBoard, MoveEvalPair> cachedEvals) {
-    if (cachedEvals.containsKey(board)) {
-      return cachedEvals.get(board);
-    }
+    //if (cachedEvals.containsKey(board)) {
+    //  return cachedEvals.get(board);
+    //}
     if (depthLeft <= 0) {
       double eval = new SimpleEvaluator().evaluate(board);
       MoveEvalPair pair = new MoveEvalPair(null, eval);
-      cachedEvals.put(board, pair);
+      //cachedEvals.put(board, pair);
       return pair;
     }
     List<Move> legalMoves = board.getLegalMoves(turn);
     if (legalMoves.isEmpty()) {
-      if (board.kingIsInCheck(true)) {
-        MoveEvalPair pair = new MoveEvalPair(null, -999999);
-        cachedEvals.put(board, pair);
+      if (board.kingIsInCheck(turn)) {
+        MoveEvalPair pair = new MoveEvalPair(null, turn ? -999999 : 999999);
+        //cachedEvals.put(board, pair);
         return pair;
       } else {
         MoveEvalPair pair = new MoveEvalPair(null, 0);
-        cachedEvals.put(board, pair);
+        //cachedEvals.put(board, pair);
         return pair;
       }
     }
     Move bestMove = null;
     double bestEval = turn ? -999999 : 999999;
+    /*if (depthLeft == 4) {
+      for (Move m : legalMoves) {
+        System.out.println(m.toString());
+      }
+    }*/
     for (Move m : legalMoves) {
       ChessBoard newBoard = new ChessBoardImpl(board);
       newBoard.makeMove(m);
@@ -50,7 +56,7 @@ public class SimpleMinimaxBot implements Bot {
       }
     }
     MoveEvalPair pair = new MoveEvalPair(bestMove, bestEval);
-    cachedEvals.put(board, pair);
+    //cachedEvals.put(board, pair);
     return pair;
   }
 

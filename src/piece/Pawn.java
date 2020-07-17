@@ -3,7 +3,6 @@ package piece;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import util.Utils;
 
 public class Pawn extends AbstractChessPiece implements ChessPiece {
@@ -29,7 +28,7 @@ public class Pawn extends AbstractChessPiece implements ChessPiece {
   @Override
   public void updatePieceMoved(int toR, int toC) {
     hasMoved = true;
-    justAdvancedTwoSquares = r - toR == 2 * sideAsInt();
+    justAdvancedTwoSquares = r - toR == (2 * sideAsInt());
     super.updatePieceMoved(toR, toC);
   }
 
@@ -45,10 +44,10 @@ public class Pawn extends AbstractChessPiece implements ChessPiece {
             && board[r - sideAsInt()][c] == null) {
       legalMoves.add(new Move(r, c, r - sideAsInt(), c));
     }
-    if (Utils.inBounds(r - sideAsInt(), c) && Utils.inBounds(r - 2 * sideAsInt(), c)
-            && board[r - sideAsInt()][c] == null && board[r - 2 * sideAsInt()][c] == null
+    if (Utils.inBounds(r - sideAsInt(), c) && Utils.inBounds(r - (2 * sideAsInt()), c)
+            && board[r - sideAsInt()][c] == null && board[r - (2 * sideAsInt())][c] == null
             && !hasMoved) {
-      legalMoves.add(new Move(r, c, r - 2 * sideAsInt(), c));
+      legalMoves.add(new Move(r, c, r - (2 * sideAsInt()), c));
     }
     if (Utils.inBounds(r - sideAsInt(), c - 1)
             && ((board[r - sideAsInt()][c - 1] != null
