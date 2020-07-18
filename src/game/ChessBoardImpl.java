@@ -3,7 +3,6 @@ package game;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-
 import piece.Bishop;
 import piece.ChessPiece;
 import piece.King;
@@ -184,6 +183,19 @@ public class ChessBoardImpl implements ChessBoard {
       }
     }
     return legalMoves;
+  }
+
+  @Override
+  public List<Move> getAttackMoves(boolean side) {
+    List<Move> attackMoves = new ArrayList<>();
+    for (int r = 0; r < 8; r++) {
+      for (int c = 0; c < 8; c++) {
+        if (board[r][c] != null && board[r][c].side() == side) {
+          attackMoves.addAll(board[r][c].getAttackMoves(board));
+        }
+      }
+    }
+    return attackMoves;
   }
 
   @Override

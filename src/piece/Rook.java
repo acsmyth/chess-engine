@@ -8,8 +8,12 @@ public class Rook extends AbstractChessPiece implements ChessPiece {
   private boolean hasMoved;
 
   public Rook(int r, int c, boolean isWhitePiece) {
+    this(r, c, isWhitePiece, false);
+  }
+
+  public Rook(int r, int c, boolean isWhitePiece, boolean hasMoved) {
     super(r, c, isWhitePiece);
-    hasMoved = false;
+    this.hasMoved = hasMoved;
   }
 
   @Override
@@ -42,7 +46,7 @@ public class Rook extends AbstractChessPiece implements ChessPiece {
 
   @Override
   public ChessPiece create(int r, int c, boolean isWhitePiece) {
-    return new Rook(r, c, isWhitePiece);
+    return new Rook(r, c, isWhitePiece, hasMoved);
   }
 
   @Override
@@ -53,5 +57,15 @@ public class Rook extends AbstractChessPiece implements ChessPiece {
   @Override
   public int hashCode() {
     return Integer.hashCode(hasMoved ? 10 : -10);
+  }
+
+  public boolean hasMoved() {
+    return hasMoved;
+  }
+
+  @Override
+  public void updatePieceMoved(int toR, int toC) {
+    hasMoved = true;
+    super.updatePieceMoved(toR, toC);
   }
 }

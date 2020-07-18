@@ -1,7 +1,7 @@
 package game;
 
 import bot.Bot;
-import bot.SimpleMinimaxBot;
+import bot.MinimaxWithABPruningBot;
 import piece.Move;
 
 public class ChessGameImpl implements ChessGame {
@@ -12,7 +12,7 @@ public class ChessGameImpl implements ChessGame {
   public ChessGameImpl() {
     board = new ChessBoardImpl();
     turn = true;
-    engine = new SimpleMinimaxBot();
+    engine = new MinimaxWithABPruningBot();
   }
 
   @Override

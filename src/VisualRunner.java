@@ -14,7 +14,9 @@ public class VisualRunner extends PApplet {
   private int cellHeight;
   private boolean shouldMakeComputerMove;
   private boolean editMode;
+  private boolean side;
 
+  // TODO - null move pruning, move ordering, extensions for captures (quiescence search)
   public static void main(String[] args) {
     PApplet.main("VisualRunner");
   }
@@ -31,6 +33,7 @@ public class VisualRunner extends PApplet {
     cellHeight = height / 8;
     shouldMakeComputerMove = true;
     editMode = false;
+    side = true;
   }
 
   public void draw() {
@@ -45,8 +48,8 @@ public class VisualRunner extends PApplet {
     ChessPiece[][] brd = game.getBoard().getBoard();
     for (int r = 0; r < 8; r++) {
       for (int c = 0; c < 8; c++) {
-        int x = c * cellWidth;
-        int y = r * cellHeight;
+        int x = side ? c * cellWidth : (7 - c) * cellHeight;
+        int y = side ? r * cellHeight : (7 - r) * cellHeight;
 
         rect(x, y, cellWidth, cellHeight);
         if (brd[r][c] == null) continue;
@@ -82,16 +85,16 @@ public class VisualRunner extends PApplet {
   }
 
   public void mousePressed() {
-    int r = mouseY / cellHeight;
-    int c = mouseX / cellWidth;
+    int r = side ? mouseY / cellHeight : (7 - mouseY / cellHeight);
+    int c = side ? mouseX / cellWidth : (7 - mouseX / cellWidth);
     if (game.getBoard().getBoard()[r][c] != null) {
       moveFrom = new Pos(r, c);
     }
   }
 
   public void mouseReleased() {
-    int r = mouseY / cellHeight;
-    int c = mouseX / cellWidth;
+    int r = side ? mouseY / cellHeight : (7 - mouseY / cellHeight);
+    int c = side ? mouseX / cellWidth : (7 - mouseX / cellWidth);
     if (moveFrom == null) return;
     if (r == moveFrom.r && c == moveFrom.c) {
       moveFrom = null;
@@ -116,6 +119,8 @@ public class VisualRunner extends PApplet {
       case ' ':
         shouldMakeComputerMove = true;
         break;
+      case 's':
+        side = !side;
       default:
         // do nothing
     }

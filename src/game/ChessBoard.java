@@ -16,5 +16,7 @@ public interface ChessBoard {
 
   List<Move> getLegalMoves(boolean side);
 
+  List<Move> getAttackMoves(boolean side);
+
   ChessPiece[][] getBoard();
 }

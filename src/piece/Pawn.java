@@ -10,9 +10,14 @@ public class Pawn extends AbstractChessPiece implements ChessPiece {
   private boolean justAdvancedTwoSquares;
 
   public Pawn(int r, int c, boolean isWhitePiece) {
+    this(r, c, isWhitePiece, false, false);
+  }
+
+  public Pawn(int r, int c, boolean isWhitePiece, boolean hasMoved,
+              boolean justAdvancedTwoSquares) {
     super(r, c, isWhitePiece);
-    hasMoved = false;
-    justAdvancedTwoSquares = false;
+    this.hasMoved = hasMoved;
+    this.justAdvancedTwoSquares = justAdvancedTwoSquares;
   }
 
   @Override
@@ -22,7 +27,7 @@ public class Pawn extends AbstractChessPiece implements ChessPiece {
 
   @Override
   public ChessPiece create(int r, int c, boolean isWhitePiece) {
-    return new Pawn(r, c, isWhitePiece);
+    return new Pawn(r, c, isWhitePiece, hasMoved, justAdvancedTwoSquares);
   }
 
   @Override
@@ -30,6 +35,12 @@ public class Pawn extends AbstractChessPiece implements ChessPiece {
     hasMoved = true;
     justAdvancedTwoSquares = r - toR == (2 * sideAsInt());
     super.updatePieceMoved(toR, toC);
+  }
+
+  @Override
+  public void updatePieceNotMoved(int toR, int toC) {
+    super.updatePieceNotMoved(toR, toC);
+    justAdvancedTwoSquares = false;
   }
 
   @Override

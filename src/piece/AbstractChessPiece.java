@@ -71,6 +71,7 @@ public abstract class AbstractChessPiece implements ChessPiece {
     return cachedLegalMoves;
   }
 
+  @Override
   public List<Move> getAttackMoves(ChessPiece[][] board) {
     if (cachedAttackMoves != null) return cachedAttackMoves;
     cachedAttackMoves = calculateAttackMoves(board);

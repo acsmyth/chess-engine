@@ -38,16 +38,22 @@ public class Move {
             && board[toR][toC].side() != board[fromR][toC].side()
             && ((Pawn)board[fromR][toC]).justAdvancedTwoSquares()) {
       board[fromR][toC] = null;
-    } else if (board[toR][toC] instanceof King && Math.abs(toR - fromR) > 1) {
+    } else if (board[toR][toC] instanceof King && Math.abs(toC - fromC) > 1) {
       if (Utils.inBounds(toR, toC + 1) && board[toR][toC + 1] instanceof Rook) {
         board[toR][toC - 1] = board[toR][toC + 1];
         board[toR][toC + 1] = null;
+        // update r,c of rook
+        board[toR][toC - 1].updatePieceMoved(toR, toC - 1);
       } else {
         board[toR][toC + 1] = board[toR][toC - 2];
         board[toR][toC - 2] = null;
+        // update r,c of rook
+        board[toR][toC + 1].updatePieceMoved(toR, toC + 1);
       }
+    } else if (board[toR][toC] instanceof Pawn && ((board[toR][toC].side() && toR == 0)
+            || (!board[toR][toC].side() && toR == 7))) {
+      board[toR][toC] = new Queen(toR, toC, board[toR][toC].side());
     }
-    // TODO - have to update the r,c of the rook after castling too
   }
 
   @Override
