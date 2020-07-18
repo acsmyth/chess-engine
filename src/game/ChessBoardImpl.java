@@ -29,7 +29,7 @@ public class ChessBoardImpl implements ChessBoard {
 
   public ChessBoardImpl(ChessBoard board) {
     ChessBoardImpl otherBoard = (ChessBoardImpl)board;
-    this.board = deepClone(otherBoard.board);
+    this.board = deepClone(otherBoard.getBoard());
     whiteKingPos = getKingPos(true);
     blackKingPos = getKingPos(false);
   }
@@ -148,7 +148,7 @@ public class ChessBoardImpl implements ChessBoard {
   @Override
   public void display() {
     for (int r = 0; r < 8; r++) {
-      System.out.print(r + "   ");
+      System.out.print(r + "    ");
       for (int c = 0; c < 8; c++) {
         if (board[r][c] == null) {
           System.out.print("\u001B[37m" + "☐" + "\u001B[0m");
@@ -164,7 +164,7 @@ public class ChessBoardImpl implements ChessBoard {
         System.out.print("\n");
       }
     }
-    System.out.print("\n\n    ");
+    System.out.print("\n\n     ");
     for (int c = 0; c < 8; c++) {
       System.out.print(c);
       if (c < 7) {

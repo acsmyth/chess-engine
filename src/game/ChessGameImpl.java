@@ -16,11 +16,13 @@ public class ChessGameImpl implements ChessGame {
   }
 
   @Override
-  public void makeMove(int fromR, int fromC, int toR, int toC) {
+  public boolean makeMove(int fromR, int fromC, int toR, int toC) {
     if (board.isLegalMove(fromR, fromC, toR, toC, turn)) {
       board.makeMove(new Move(fromR, fromC, toR, toC));
       turn = !turn;
+      return true;
     }
+    return false;
   }
 
   @Override
@@ -38,5 +40,10 @@ public class ChessGameImpl implements ChessGame {
   @Override
   public boolean isOver() {
     return board.kingIsInCheck(turn) && board.getLegalMoves(!turn).isEmpty();
+  }
+
+  @Override
+  public ChessBoard getBoard() {
+    return board;
   }
 }
