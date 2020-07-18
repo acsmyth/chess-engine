@@ -3,13 +3,11 @@ package bot;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import game.ChessBoard;
 import game.ChessBoardImpl;
 import piece.Move;
 
 public class SimpleMinimaxBot implements Bot {
-
   @Override
   public Move chooseMove(ChessBoard board, boolean turn) {
     Move chosenMove = minimax(board, turn, 4, new HashMap<>()).move;

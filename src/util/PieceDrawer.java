@@ -30,7 +30,7 @@ public class PieceDrawer {
     whiteRookImg.resize(whiteRookImg.width / 3, whiteRookImg.height / yScl);
     whiteQueenImg = p.loadImage(r + "white_queen.PNG");
     whiteQueenImg.resize(whiteQueenImg.width / 3, whiteQueenImg.height / yScl);
-    whiteKingImg = p.loadImage(r + "white_queen.PNG");
+    whiteKingImg = p.loadImage(r + "white_king.PNG");
     whiteKingImg.resize(whiteKingImg.width / 3, whiteKingImg.height / yScl);
     blackPawnImg = p.loadImage(r + "black_pawn.PNG");
     blackPawnImg.resize(blackPawnImg.width / 3, blackPawnImg.height / yScl);
@@ -40,9 +40,9 @@ public class PieceDrawer {
     blackBishopImg.resize(blackBishopImg.width / 3, blackBishopImg.height / yScl);
     blackRookImg = p.loadImage(r + "black_rook.PNG");
     blackRookImg.resize(blackRookImg.width / 3, blackRookImg.height / yScl);
-    blackQueenImg = p.loadImage(r + "black_king.PNG");
+    blackQueenImg = p.loadImage(r + "black_queen.PNG");
     blackQueenImg.resize(blackQueenImg.width / 3, blackQueenImg.height / yScl);
-    blackKingImg = p.loadImage(r + "black_queen.PNG");
+    blackKingImg = p.loadImage(r + "black_king.PNG");
     blackKingImg.resize(blackKingImg.width / 3, blackKingImg.height / yScl);
   }
 }

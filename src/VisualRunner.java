@@ -1,6 +1,7 @@
 import game.ChessGame;
 import game.ChessGameImpl;
 import piece.ChessPiece;
+import piece.Move;
 import processing.core.PApplet;
 import util.PieceDrawer;
 import util.Pos;
@@ -12,6 +13,7 @@ public class VisualRunner extends PApplet {
   private int cellWidth;
   private int cellHeight;
   private boolean shouldMakeComputerMove;
+  private boolean editMode;
 
   public static void main(String[] args) {
     PApplet.main("VisualRunner");
@@ -27,7 +29,8 @@ public class VisualRunner extends PApplet {
     moveFrom = null;
     cellWidth = width / 8;
     cellHeight = height / 8;
-    shouldMakeComputerMove = false;
+    shouldMakeComputerMove = true;
+    editMode = false;
   }
 
   public void draw() {
@@ -89,14 +92,32 @@ public class VisualRunner extends PApplet {
   public void mouseReleased() {
     int r = mouseY / cellHeight;
     int c = mouseX / cellWidth;
+    if (moveFrom == null) return;
     if (r == moveFrom.r && c == moveFrom.c) {
       moveFrom = null;
     } else {
-      boolean moveSuccessful = game.makeMove(moveFrom.r, moveFrom.c, r, c);
-      if (moveSuccessful) {
-        shouldMakeComputerMove = true;
-        drawBoard();
+      if (editMode) {
+        game.getBoard().makeMove(new Move(moveFrom.r, moveFrom.c, r, c));
+      } else {
+        boolean moveSuccessful = game.makeMove(moveFrom.r, moveFrom.c, r, c);
+        if (moveSuccessful) {
+          shouldMakeComputerMove = true;
+          drawBoard();
+        }
       }
+    }
+  }
+
+  public void keyPressed() {
+    switch (key) {
+      case 'e':
+        editMode = !editMode;
+        break;
+      case ' ':
+        shouldMakeComputerMove = true;
+        break;
+      default:
+        // do nothing
     }
   }
 }
