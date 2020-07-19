@@ -9,14 +9,18 @@ import piece.Move;
 
 public class SimpleMinimaxBot implements Bot {
   private final Evaluator evaluator;
+  private double prevEval;
 
   public SimpleMinimaxBot() {
     evaluator = new ComplexEvaluator();
+    prevEval = 0;
   }
 
   @Override
   public Move chooseMove(ChessBoard board, boolean turn) {
-    Move chosenMove = minimax(board, turn, 4, new HashMap<>()).move;
+    MoveEvalPair result = minimax(board, turn, 4, new HashMap<>());
+    Move chosenMove = result.move;
+    prevEval = result.eval;
     return chosenMove;
   }
 
@@ -62,6 +66,11 @@ public class SimpleMinimaxBot implements Bot {
     MoveEvalPair pair = new MoveEvalPair(bestMove, bestEval);
     //cachedEvals.put(board, pair);
     return pair;
+  }
+
+  @Override
+  public double getPrevEval() {
+    return prevEval;
   }
 
   private static class MoveEvalPair {

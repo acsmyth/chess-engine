@@ -9,15 +9,23 @@ import piece.Move;
 
 public class MinimaxWithABPruningBot implements Bot {
   private final Evaluator evaluator;
+  private final MoveSorter moveSorter;
+  public static int depth;
+  private double prevEval;
 
   public MinimaxWithABPruningBot() {
     evaluator = new ComplexEvaluator();
+    moveSorter = new SimpleMoveSorter();
+    depth = 4;
+    prevEval = 0;
   }
 
   @Override
   public Move chooseMove(ChessBoard board, boolean turn) {
-    Move chosenMove = minimax(board, turn, 4, new HashMap<>(),
-            -999999, 999999).move;
+    MoveEvalPair result = minimax(board, turn, depth, new HashMap<>(),
+            -999999, 999999);
+    Move chosenMove = result.move;
+    prevEval = result.eval;
     return chosenMove;
   }
 
@@ -43,6 +51,10 @@ public class MinimaxWithABPruningBot implements Bot {
     double bestEval = turn ? -999999 : 999999;
     double newAlpha = alpha;
     double newBeta = beta;
+
+    // order legal moves
+    moveSorter.sort(legalMoves, board);
+
     for (Move m : legalMoves) {
       ChessBoard newBoard = new ChessBoardImpl(board);
       newBoard.makeMove(m);
@@ -71,6 +83,12 @@ public class MinimaxWithABPruningBot implements Bot {
     MoveEvalPair pair = new MoveEvalPair(bestMove, bestEval);
     return pair;
   }
+
+  @Override
+  public double getPrevEval() {
+    return prevEval;
+  }
+
 
   private static class MoveEvalPair {
     private final Move move;

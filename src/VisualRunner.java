@@ -1,3 +1,5 @@
+import bot.ComplexEvaluator;
+import bot.MinimaxWithABPruningBot;
 import game.ChessGame;
 import game.ChessGameImpl;
 import piece.ChessPiece;
@@ -15,6 +17,7 @@ public class VisualRunner extends PApplet {
   private boolean shouldMakeComputerMove;
   private boolean editMode;
   private boolean side;
+  private static int sidebarWidth = 20;
 
   // TODO - null move pruning, move ordering, extensions for captures (quiescence search)
   public static void main(String[] args) {
@@ -22,14 +25,14 @@ public class VisualRunner extends PApplet {
   }
 
   public void settings() {
-    size(1200, 1200);
+    size(1200 + sidebarWidth, 1200);
   }
 
   public void setup() {
     game = new ChessGameImpl();
     drawer = new PieceDrawer(this);
     moveFrom = null;
-    cellWidth = width / 8;
+    cellWidth = (width-sidebarWidth) / 8;
     cellHeight = height / 8;
     shouldMakeComputerMove = true;
     editMode = false;
@@ -38,6 +41,8 @@ public class VisualRunner extends PApplet {
 
   public void draw() {
     drawBoard();
+    drawPrevMove();
+    drawBoardEval();
     if (shouldMakeComputerMove) {
       game.makeComputerMove();
       shouldMakeComputerMove = false;
@@ -84,6 +89,36 @@ public class VisualRunner extends PApplet {
     }
   }
 
+  private void drawPrevMove() {
+    Move prevMove = game.getPrevMove();
+    if (prevMove != null) {
+      int x1 = side ? prevMove.fromC * cellWidth + cellWidth / 2 : ((7 - prevMove.fromC) * cellWidth + cellWidth / 2);
+      int y1 = side ? prevMove.fromR * cellHeight + cellHeight / 2 : ((7 - prevMove.fromR) * cellHeight + cellHeight / 2);
+      int x2 = side ? prevMove.toC * cellWidth + cellWidth / 2 : ((7 - prevMove.toC) * cellWidth + cellWidth / 2);
+      int y2 = side ? prevMove.toR * cellHeight + cellHeight / 2 : ((7 - prevMove.toR) * cellHeight + cellHeight / 2);
+
+      stroke(0, 0, 255, 30);
+      strokeWeight(10);
+      line(x1, y1, x2, y2);
+      strokeWeight(1);
+      stroke(0, 0, 0, 255);
+    }
+  }
+
+  private void drawBoardEval() {
+    double eval = game.getPrevEval();
+    float whiteProportion = (float)(1.0 / (1.0 + Math.pow(1.5, -eval)));
+    int white = color(255, 255, 255);
+    int black = color(0, 0, 0);
+    fill(side ? white : black);
+    rect(width - sidebarWidth, (side ? (1 - whiteProportion) : whiteProportion) * height,
+            sidebarWidth, (side ? whiteProportion : (1 - whiteProportion)) * height);
+    fill(side ? black : white);
+    rect(width - sidebarWidth, 0, sidebarWidth, (side ? (1 - whiteProportion) : whiteProportion)
+            * height);
+    fill(255, 255, 255);
+  }
+
   public void mousePressed() {
     int r = side ? mouseY / cellHeight : (7 - mouseY / cellHeight);
     int c = side ? mouseX / cellWidth : (7 - mouseX / cellWidth);
@@ -106,6 +141,7 @@ public class VisualRunner extends PApplet {
         if (moveSuccessful) {
           shouldMakeComputerMove = true;
           drawBoard();
+          drawPrevMove();
         }
       }
     }
@@ -121,6 +157,15 @@ public class VisualRunner extends PApplet {
         break;
       case 's':
         side = !side;
+        break;
+      case '[':
+        MinimaxWithABPruningBot.depth--;
+        System.out.println(MinimaxWithABPruningBot.depth);
+        break;
+      case ']':
+        MinimaxWithABPruningBot.depth++;
+        System.out.println(MinimaxWithABPruningBot.depth);
+        break;
       default:
         // do nothing
     }

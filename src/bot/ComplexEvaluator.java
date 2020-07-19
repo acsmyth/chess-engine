@@ -43,8 +43,12 @@ public class ComplexEvaluator implements Evaluator {
               if (inCenter(m.toR, m.toC)) {
                 eval += brd[r][c].sideAsInt() / 15.0;
               }
+              if (inInnerRingOutsideCenter(m.toR, m.toC)) {
+                eval += brd[r][c].sideAsInt() / 30.0;
+              }
             }
           }
+
         }
       }
     }
@@ -53,5 +57,10 @@ public class ComplexEvaluator implements Evaluator {
 
   private boolean inCenter(int toR, int toC) {
     return (toR == 3 || toR == 4) && (toC == 3 || toC == 4);
+  }
+
+  private boolean inInnerRingOutsideCenter(int toR, int toC) {
+    return ((toR == 2 || toR == 5) && (toC >= 2 && toC <= 5))
+            || ((toC == 2 || toC == 5) && (toR >= 2 && toR <= 5));
   }
 }
