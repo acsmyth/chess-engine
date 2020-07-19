@@ -32,10 +32,13 @@ public class MinimaxWithABPruningBot implements Bot {
   MoveEvalPair minimax(ChessBoard board, boolean turn, int depthLeft,
                        Map<ChessBoard, MoveEvalPair> cachedEvals,
                        double alpha, double beta) {
-    if (depthLeft <= 0) {
+    if (depthLeft <= 0 && board.isQuiet()) { // fine since calculating attack moves in evaluator anyway, cached one place or another
       double eval = evaluator.evaluate(board);
       MoveEvalPair pair = new MoveEvalPair(null, eval);
       return pair;
+    } else if (depthLeft <= 0) {
+      // not quiet
+      // minimax, but only on capture moves with non-negative (include 0) value deltas
     }
     List<Move> legalMoves = board.getLegalMoves(turn);
     if (legalMoves.isEmpty()) {
