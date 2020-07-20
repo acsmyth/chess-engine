@@ -5,7 +5,7 @@ import piece.ChessPiece;
 
 public class SimpleEvaluator implements Evaluator {
   @Override
-  public double evaluate(ChessBoard board) {
+  public double evaluate(ChessBoard board, boolean turn) {
     ChessPiece[][] brd = board.getBoard();
     double eval = 0;
     for (int r=0;r<8;r++) {

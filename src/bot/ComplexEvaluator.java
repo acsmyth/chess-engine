@@ -9,7 +9,7 @@ import piece.Rook;
 
 public class ComplexEvaluator implements Evaluator {
   @Override
-  public double evaluate(ChessBoard board) {
+  public double evaluate(ChessBoard board, boolean turn) {
     ChessPiece[][] brd = board.getBoard();
     double eval = 0;
     for (int r = 0; r < 8; r++) {
@@ -52,6 +52,8 @@ public class ComplexEvaluator implements Evaluator {
         }
       }
     }
+    // tempo bonus
+    eval += turn ? 0.25 : -0.25;
     return eval;
   }
 

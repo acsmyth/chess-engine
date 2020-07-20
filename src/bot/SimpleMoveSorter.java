@@ -13,12 +13,12 @@ public class SimpleMoveSorter implements MoveSorter {
     // low score means its delta is higher than others
     moves.sort((m1, m2) -> {
       ChessPiece[][] brd = board.getBoard();
-      return Math.max(0, (eval(m2.toR, m2.toC, brd) - eval(m2.fromR, m2.fromC, brd)))
-              - Math.max(0, (eval(m1.toR, m1.toC, brd) - eval(m1.fromR, m1.fromC, brd)));
+      return Math.max(0, evalDelta(m2, brd)) - Math.max(0, evalDelta(m1, brd));
     });
   }
 
-  private int eval(int r, int c, ChessPiece[][] brd) {
+  @Override
+  public int eval(int r, int c, ChessPiece[][] brd) {
     if (brd[r][c] == null) return 0;
     switch (brd[r][c].getClass().getSimpleName()) {
       case "Pawn":
@@ -36,5 +36,10 @@ public class SimpleMoveSorter implements MoveSorter {
       default:
         throw new IllegalStateException("Invalid piece");
     }
+  }
+
+  @Override
+  public int evalDelta(Move m, ChessPiece[][] brd) {
+    return eval(m.toR, m.toC, brd) - eval(m.fromR, m.fromC, brd);
   }
 }

@@ -17,4 +17,6 @@ public interface ChessGame {
   Move getPrevMove();
 
   double getPrevEval();
+
+  boolean turn();
 }

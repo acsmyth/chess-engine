@@ -1,5 +1,7 @@
 package piece;
 
+import game.ChessBoard;
+import game.ChessBoardImpl;
 import util.Utils;
 
 public class Move {
@@ -30,6 +32,7 @@ public class Move {
   }
 
   public void execute(ChessPiece[][] board) {
+    if (this instanceof NullMove) return;
     board[toR][toC] = board[fromR][fromC];
     board[fromR][fromC] = null;
 
@@ -59,5 +62,10 @@ public class Move {
   @Override
   public String toString() {
     return fromR + " " + fromC + " --> " + toR + " " + toC;
+  }
+
+  public boolean isCaptureMove(ChessBoard board) {
+    ChessPiece[][] brd = board.getBoard();
+    return brd[toR][toC] != null;
   }
 }

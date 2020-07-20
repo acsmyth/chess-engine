@@ -8,6 +8,7 @@ import piece.ChessPiece;
 import piece.King;
 import piece.Knight;
 import piece.Move;
+import piece.NullMove;
 import piece.Pawn;
 import piece.Queen;
 import piece.Rook;
@@ -123,6 +124,7 @@ public class ChessBoardImpl implements ChessBoard {
   }
 
   private void updateBoard(Move move) {
+    if (move instanceof NullMove) return;
     board[move.toR][move.toC].updatePieceMoved(move.toR, move.toC);
     updateKingPos(move);
     for (int r = 0; r < 8; r++) {
@@ -201,6 +203,18 @@ public class ChessBoardImpl implements ChessBoard {
   @Override
   public ChessPiece[][] getBoard() {
     return board;
+  }
+
+  @Override
+  public List<Move> getCaptureMoves(boolean side) {
+    List<Move> legalMoves = getLegalMoves(side);
+    List<Move> captureMoves = new ArrayList<>();
+    for (Move m : legalMoves) {
+      if (m.isCaptureMove(this)) {
+        captureMoves.add(m);
+      }
+    }
+    return captureMoves;
   }
 
   @Override

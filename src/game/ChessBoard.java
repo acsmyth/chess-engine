@@ -1,6 +1,7 @@
 package game;
 
 import java.util.List;
+import java.util.Map;
 
 import piece.ChessPiece;
 import piece.Move;
@@ -14,9 +15,11 @@ public interface ChessBoard {
 
   void display();
 
+  ChessPiece[][] getBoard();
+
   List<Move> getLegalMoves(boolean side);
 
   List<Move> getAttackMoves(boolean side);
 
-  ChessPiece[][] getBoard();
+  List<Move> getCaptureMoves(boolean side);
 }

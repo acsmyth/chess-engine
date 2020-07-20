@@ -17,6 +17,13 @@ public class ChessGameImpl implements ChessGame {
     prevMove = null;
   }
 
+  public ChessGameImpl(ChessGame gameToCopy) {
+    board = new ChessBoardImpl(gameToCopy.getBoard());
+    turn = gameToCopy.turn();
+    engine = new MinimaxWithABPruningBot();
+    prevMove = null;
+  }
+
   @Override
   public boolean makeMove(int fromR, int fromC, int toR, int toC) {
     if (board.isLegalMove(fromR, fromC, toR, toC, turn)) {
@@ -59,5 +66,10 @@ public class ChessGameImpl implements ChessGame {
   @Override
   public double getPrevEval() {
     return engine.getPrevEval();
+  }
+
+  @Override
+  public boolean turn() {
+    return turn;
   }
 }

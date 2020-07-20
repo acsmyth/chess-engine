@@ -1,4 +1,3 @@
-import bot.ComplexEvaluator;
 import bot.MinimaxWithABPruningBot;
 import game.ChessGame;
 import game.ChessGameImpl;
@@ -17,7 +16,7 @@ public class VisualRunner extends PApplet {
   private boolean shouldMakeComputerMove;
   private boolean editMode;
   private boolean side;
-  private static int sidebarWidth = 20;
+  private static final int sidebarWidth = 30;
 
   // TODO - null move pruning, move ordering, extensions for captures (quiescence search)
   public static void main(String[] args) {
@@ -37,6 +36,9 @@ public class VisualRunner extends PApplet {
     shouldMakeComputerMove = true;
     editMode = false;
     side = true;
+    drawBoard();
+    drawPrevMove();
+    drawBoardEval();
   }
 
   public void draw() {

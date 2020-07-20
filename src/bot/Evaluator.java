@@ -3,5 +3,5 @@ package bot;
 import game.ChessBoard;
 
 public interface Evaluator {
-  double evaluate(ChessBoard board);
+  double evaluate(ChessBoard board, boolean turn);
 }

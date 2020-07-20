@@ -30,7 +30,7 @@ public class SimpleMinimaxBot implements Bot {
     //  return cachedEvals.get(board);
     //}
     if (depthLeft <= 0) {
-      double eval = evaluator.evaluate(board);
+      double eval = evaluator.evaluate(board, turn);
       MoveEvalPair pair = new MoveEvalPair(null, eval);
       //cachedEvals.put(board, pair);
       return pair;

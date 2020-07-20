@@ -6,6 +6,7 @@ import java.util.Map;
 import game.ChessBoard;
 import game.ChessBoardImpl;
 import piece.Move;
+import piece.NullMove;
 
 public class MinimaxWithABPruningBot implements Bot {
   private final Evaluator evaluator;
@@ -32,14 +33,32 @@ public class MinimaxWithABPruningBot implements Bot {
   MoveEvalPair minimax(ChessBoard board, boolean turn, int depthLeft,
                        Map<ChessBoard, MoveEvalPair> cachedEvals,
                        double alpha, double beta) {
-    if (depthLeft <= 0 && board.isQuiet()) { // fine since calculating attack moves in evaluator anyway, cached one place or another
+    if (depthLeft <= 0 && !board.kingIsInCheck(turn)) {
+      double eval = evaluator.evaluate(board, turn);
+      MoveEvalPair pair = new MoveEvalPair(null, eval);
+      return pair;
+    }
+    /*
+    if (depthLeft <= -1) {
       double eval = evaluator.evaluate(board);
       MoveEvalPair pair = new MoveEvalPair(null, eval);
       return pair;
-    } else if (depthLeft <= 0) {
-      // not quiet
-      // minimax, but only on capture moves with non-negative (include 0) value deltas
     }
+    if (depthLeft == 0) {
+      List<Move> captureMoves = board.getCaptureMoves(turn);
+      ChessPiece[][] brd = board.getBoard();
+      captureMoves.removeIf(
+              m -> moveSorter.eval(m.toR, m.toC, brd)
+                      - moveSorter.eval(m.fromR, m.fromC, brd) <= 0);
+      if (captureMoves.isEmpty()) { // maybe extensions for checks as well
+        double eval = evaluator.evaluate(board);
+        MoveEvalPair pair = new MoveEvalPair(null, eval);
+        return pair;
+      } else {
+        return loopThroughMoves(board, captureMoves, turn, depthLeft, cachedEvals, alpha, beta);
+      }
+    }*/
+    /*
     List<Move> legalMoves = board.getLegalMoves(turn);
     if (legalMoves.isEmpty()) {
       if (board.kingIsInCheck(turn)) {
@@ -49,19 +68,38 @@ public class MinimaxWithABPruningBot implements Bot {
         MoveEvalPair pair = new MoveEvalPair(null, 0);
         return pair;
       }
-    }
+    }*/
+
+    // order legal moves
+    return loopThroughMoves(board, board.getLegalMoves(turn),
+            turn, depthLeft, cachedEvals, alpha, beta);
+  }
+
+  private MoveEvalPair loopThroughMoves(ChessBoard board, List<Move> legalMoves, boolean turn,
+                                        int depthLeft, Map<ChessBoard, MoveEvalPair> cachedEvals,
+                                        double alpha, double beta) {
     Move bestMove = null;
     double bestEval = turn ? -999999 : 999999;
     double newAlpha = alpha;
     double newBeta = beta;
 
-    // order legal moves
     moveSorter.sort(legalMoves, board);
+
+    // add the null move to beginning only at max depth
+    //if (depthLeft == depth || depthLeft == depth-1 || depthLeft == depth-2) {
+    //  legalMoves.add(0, new NullMove());
+    //}
 
     for (Move m : legalMoves) {
       ChessBoard newBoard = new ChessBoardImpl(board);
       newBoard.makeMove(m);
-      double eval = minimax(newBoard, !turn, depthLeft - 1, cachedEvals, newAlpha, newBeta).eval;
+
+      int nextDepth = depthLeft - 1;
+      //if (moveSorter.evalDelta(m, board.getBoard()) > 0) {
+      //  nextDepth++;
+      //}
+
+      double eval = minimax(newBoard, !turn, nextDepth, cachedEvals, newAlpha, newBeta).eval;
       // alpha cutoff
       if (!turn && eval < alpha) {
         return new MoveEvalPair(m, eval);
@@ -71,16 +109,18 @@ public class MinimaxWithABPruningBot implements Bot {
         return new MoveEvalPair(m, eval);
       }
 
-      bestEval = turn ? Math.max(eval, bestEval) : Math.min(eval, bestEval);
-      if (eval == bestEval) {
-        bestMove = m;
+      if (!(m instanceof NullMove)) {
+        bestEval = turn ? Math.max(eval, bestEval) : Math.min(eval, bestEval);
+        if (eval == bestEval) {
+          bestMove = m;
+        }
       }
 
       // update alpha and beta
       if (turn) {
-        newAlpha = bestEval;
+        newAlpha = Math.max(eval, newAlpha);
       } else {
-        newBeta = bestEval;
+        newBeta = Math.min(eval, newBeta);
       }
     }
     MoveEvalPair pair = new MoveEvalPair(bestMove, bestEval);
