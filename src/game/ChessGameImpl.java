@@ -1,6 +1,5 @@
 package game;
 
-
 import java.util.ArrayList;
 import java.util.List;
 import bot.Bot;
@@ -48,14 +47,14 @@ public class ChessGameImpl implements ChessGame {
   }
 
   @Override
-  public void makeComputerMove() {
+  public boolean makeComputerMove() {
     Move computerMove;
     try {
       computerMove = engine.chooseMove(board, turn);
     } catch (IllegalArgumentException e) {
-      return;
+      return false;
     }
-    makeMove(computerMove.fromR, computerMove.fromC,
+    return makeMove(computerMove.fromR, computerMove.fromC,
             computerMove.toR, computerMove.toC);
   }
 

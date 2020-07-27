@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 import bot.MinimaxWithABPruningBot;
@@ -53,8 +55,10 @@ public class VisualRunner extends PApplet {
     drawPrevMove();
     drawBoardEval();
     if (shouldMakeComputerMove) {
-      prevGameStates.push(new ChessGameImpl(game));
-      game.makeComputerMove();
+      ChessGame savedCopy = new ChessGameImpl(game);
+      if (game.makeComputerMove()) {
+        prevGameStates.push(savedCopy);
+      }
       shouldMakeComputerMove = false;
     }
   }
@@ -90,13 +94,13 @@ public class VisualRunner extends PApplet {
             image(side ? drawer.whiteKnightImg : drawer.blackKnightImg, x - 4, y);
             break;
           case "Bishop":
-            image(side ? drawer.whiteBishopImg : drawer.blackBishopImg, x - 3, y);
+            image(side ? drawer.whiteBishopImg : drawer.blackBishopImg, x - 4, y);
             break;
           case "Rook":
-            image(side ? drawer.whiteRookImg : drawer.blackRookImg, x - 2, y);
+            image(side ? drawer.whiteRookImg : drawer.blackRookImg, x - 3, y);
             break;
           case "Queen":
-            image(side ? drawer.whiteQueenImg : drawer.blackQueenImg, x - 2, y);
+            image(side ? drawer.whiteQueenImg : drawer.blackQueenImg, x - 7, y);
             break;
           case "King":
             image(side ? drawer.whiteKingImg : drawer.blackKingImg, x - 2, y);
@@ -111,10 +115,14 @@ public class VisualRunner extends PApplet {
   private void drawPrevMove() {
     Move prevMove = game.getPrevMove();
     if (prevMove != null) {
-      int x1 = side ? prevMove.fromC * cellWidth + cellWidth / 2 : ((7 - prevMove.fromC) * cellWidth + cellWidth / 2);
-      int y1 = side ? prevMove.fromR * cellHeight + cellHeight / 2 : ((7 - prevMove.fromR) * cellHeight + cellHeight / 2);
-      int x2 = side ? prevMove.toC * cellWidth + cellWidth / 2 : ((7 - prevMove.toC) * cellWidth + cellWidth / 2);
-      int y2 = side ? prevMove.toR * cellHeight + cellHeight / 2 : ((7 - prevMove.toR) * cellHeight + cellHeight / 2);
+      int x1 = side ? prevMove.fromC * cellWidth + cellWidth / 2
+              : ((7 - prevMove.fromC) * cellWidth + cellWidth / 2);
+      int y1 = side ? prevMove.fromR * cellHeight + cellHeight / 2
+              : ((7 - prevMove.fromR) * cellHeight + cellHeight / 2);
+      int x2 = side ? prevMove.toC * cellWidth + cellWidth / 2
+              : ((7 - prevMove.toC) * cellWidth + cellWidth / 2);
+      int y2 = side ? prevMove.toR * cellHeight + cellHeight / 2
+              : ((7 - prevMove.toR) * cellHeight + cellHeight / 2);
 
       stroke(0, 0, 255, 30);
       strokeWeight(10);

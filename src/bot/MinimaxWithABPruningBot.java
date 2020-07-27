@@ -99,7 +99,7 @@ public class MinimaxWithABPruningBot implements Bot {
     }*/
 
     Move bestMove = null;
-    double bestEval = turn ? -999999 : 999999;
+    double bestEval = turn ? -999999999 : 999999999;
     double newAlpha = alpha;
     double newBeta = beta;
 
