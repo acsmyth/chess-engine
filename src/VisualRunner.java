@@ -61,13 +61,14 @@ public class VisualRunner extends PApplet {
 
   private void drawBoard() {
     ChessPiece[][] brd = game.getBoard().getBoard();
+    noStroke();
     for (int r = 0; r < 8; r++) {
       for (int c = 0; c < 8; c++) {
         int x = side ? c * cellWidth : (7 - c) * cellHeight;
         int y = side ? r * cellHeight : (7 - r) * cellHeight;
 
-        int light = color(255, 255, 255);
-        int dark = color(150, 220, 150);
+        int light = color(238, 238, 209);
+        int dark = color(121, 150, 83);
         if ((r % 2 == 0 && c % 2 == 0) || (r % 2 == 1 && c % 2 == 1)) {
           fill(light);
         } else {
@@ -83,22 +84,22 @@ public class VisualRunner extends PApplet {
         boolean side = brd[r][c].side();
         switch (brd[r][c].getClass().getSimpleName()) {
           case "Pawn":
-            image(side ? drawer.whitePawnImg : drawer.blackPawnImg, x + (side ? 0 : 5), y);
+            image(side ? drawer.whitePawnImg : drawer.blackPawnImg, x - 6, y);
             break;
           case "Knight":
-            image(side ? drawer.whiteKnightImg : drawer.blackKnightImg, x, y);
+            image(side ? drawer.whiteKnightImg : drawer.blackKnightImg, x - 4, y);
             break;
           case "Bishop":
-            image(side ? drawer.whiteBishopImg : drawer.blackBishopImg, x, y);
+            image(side ? drawer.whiteBishopImg : drawer.blackBishopImg, x - 3, y);
             break;
           case "Rook":
-            image(side ? drawer.whiteRookImg : drawer.blackRookImg, x, y);
+            image(side ? drawer.whiteRookImg : drawer.blackRookImg, x - 2, y);
             break;
           case "Queen":
-            image(side ? drawer.whiteQueenImg : drawer.blackQueenImg, x, y);
+            image(side ? drawer.whiteQueenImg : drawer.blackQueenImg, x - 2, y);
             break;
           case "King":
-            image(side ? drawer.whiteKingImg : drawer.blackKingImg, x, y);
+            image(side ? drawer.whiteKingImg : drawer.blackKingImg, x - 2, y);
             break;
           default:
             throw new IllegalStateException("Invalid piece");
