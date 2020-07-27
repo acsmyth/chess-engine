@@ -1,5 +1,7 @@
 package game;
 
+import java.util.List;
+
 import piece.Move;
 
 public interface ChessGame {
@@ -19,4 +21,6 @@ public interface ChessGame {
   double getPrevEval();
 
   boolean turn();
+
+  String pgn();
 }

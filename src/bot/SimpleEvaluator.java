@@ -20,7 +20,7 @@ public class SimpleEvaluator implements Evaluator {
               valChange = 3;
               break;
             case "Bishop":
-              valChange = 3;
+              valChange = 3.05;
               break;
             case "Rook":
               valChange = 5;

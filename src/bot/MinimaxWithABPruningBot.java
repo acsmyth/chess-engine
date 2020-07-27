@@ -14,10 +14,13 @@ public class MinimaxWithABPruningBot implements Bot {
   public static int depth;
   private double prevEval;
 
+  static {
+    depth = 4;
+  }
+
   public MinimaxWithABPruningBot() {
     evaluator = new ComplexEvaluator();
     moveSorter = new SimpleMoveSorter();
-    depth = 4;
     prevEval = 0;
   }
 
@@ -26,6 +29,9 @@ public class MinimaxWithABPruningBot implements Bot {
     MoveEvalPair result = minimax(board, turn, depth, new HashMap<>(),
             -999999, 999999);
     Move chosenMove = result.move;
+    if (chosenMove == null) {
+      throw new IllegalArgumentException("No legal moves on the given board");
+    }
     prevEval = result.eval;
     return chosenMove;
   }
@@ -33,7 +39,17 @@ public class MinimaxWithABPruningBot implements Bot {
   MoveEvalPair minimax(ChessBoard board, boolean turn, int depthLeft,
                        Map<ChessBoard, MoveEvalPair> cachedEvals,
                        double alpha, double beta) {
-    if (depthLeft <= 0 && !board.kingIsInCheck(turn)) {
+    /*if (depthLeft <= -2) {
+      double eval = evaluator.evaluate(board, turn);
+      MoveEvalPair pair = new MoveEvalPair(null, eval);
+      return pair;
+    }
+    List<Move> captureMoves = board.getCaptureMoves(turn);
+    captureMoves.removeIf(m -> moveSorter.evalDelta(m, board.getBoard()) > 0);
+    if (depthLeft <= 0 && !captureMoves.isEmpty()) {
+      return loopThroughMoves(board, captureMoves, turn, depthLeft, cachedEvals, alpha, beta);
+    }*/
+    if (depthLeft <= 0) {
       double eval = evaluator.evaluate(board, turn);
       MoveEvalPair pair = new MoveEvalPair(null, eval);
       return pair;
@@ -78,6 +94,10 @@ public class MinimaxWithABPruningBot implements Bot {
   private MoveEvalPair loopThroughMoves(ChessBoard board, List<Move> legalMoves, boolean turn,
                                         int depthLeft, Map<ChessBoard, MoveEvalPair> cachedEvals,
                                         double alpha, double beta) {
+    /*if (cachedEvals.containsKey(board)) {
+      return cachedEvals.get(board);
+    }*/
+
     Move bestMove = null;
     double bestEval = turn ? -999999 : 999999;
     double newAlpha = alpha;
@@ -90,23 +110,47 @@ public class MinimaxWithABPruningBot implements Bot {
     //  legalMoves.add(0, new NullMove());
     //}
 
+    if (legalMoves.isEmpty()) {
+      if (board.kingIsInCheck(turn)) {
+        MoveEvalPair pair = new MoveEvalPair(null, turn ? -999999 - depthLeft : 999999 + depthLeft);
+        return pair;
+      } else {
+        MoveEvalPair pair = new MoveEvalPair(null, 0);
+        return pair;
+      }
+    }
+
     for (Move m : legalMoves) {
       ChessBoard newBoard = new ChessBoardImpl(board);
       newBoard.makeMove(m);
+
+      //if (cachedEvals.containsKey(newBoard)) {
+      //  return cachedEvals.get(newBoard);
+      //}
 
       int nextDepth = depthLeft - 1;
       //if (moveSorter.evalDelta(m, board.getBoard()) > 0) {
       //  nextDepth++;
       //}
 
+      // check extension / positive delta extension
+      if (newBoard.kingIsInCheck(true) || newBoard.kingIsInCheck(false)) {
+        nextDepth++;
+      }
+
       double eval = minimax(newBoard, !turn, nextDepth, cachedEvals, newAlpha, newBeta).eval;
+
       // alpha cutoff
       if (!turn && eval < alpha) {
-        return new MoveEvalPair(m, eval);
+        MoveEvalPair pair = new MoveEvalPair(m, eval);
+        //cachedEvals.put(newBoard, pair);
+        return pair;
       }
       // beta cutoff
       if (turn && eval > beta) {
-        return new MoveEvalPair(m, eval);
+        MoveEvalPair pair = new MoveEvalPair(m, eval);
+        //cachedEvals.put(newBoard, pair);
+        return pair;
       }
 
       if (!(m instanceof NullMove)) {
@@ -124,6 +168,7 @@ public class MinimaxWithABPruningBot implements Bot {
       }
     }
     MoveEvalPair pair = new MoveEvalPair(bestMove, bestEval);
+    //cachedEvals.put(board, pair);
     return pair;
   }
 
@@ -131,7 +176,6 @@ public class MinimaxWithABPruningBot implements Bot {
   public double getPrevEval() {
     return prevEval;
   }
-
 
   private static class MoveEvalPair {
     private final Move move;

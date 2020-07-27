@@ -1,4 +1,7 @@
+import java.util.Stack;
+
 import bot.MinimaxWithABPruningBot;
+import game.ChessBoard;
 import game.ChessGame;
 import game.ChessGameImpl;
 import piece.ChessPiece;
@@ -17,6 +20,8 @@ public class VisualRunner extends PApplet {
   private boolean editMode;
   private boolean side;
   private static final int sidebarWidth = 30;
+  private Stack<ChessGame> prevGameStates;
+  private Stack<ChessGame> futureGameStates;
 
   // TODO - null move pruning, move ordering, extensions for captures (quiescence search)
   public static void main(String[] args) {
@@ -36,6 +41,8 @@ public class VisualRunner extends PApplet {
     shouldMakeComputerMove = true;
     editMode = false;
     side = true;
+    prevGameStates = new Stack<>();
+    futureGameStates = new Stack<>();
     drawBoard();
     drawPrevMove();
     drawBoardEval();
@@ -46,6 +53,7 @@ public class VisualRunner extends PApplet {
     drawPrevMove();
     drawBoardEval();
     if (shouldMakeComputerMove) {
+      prevGameStates.push(new ChessGameImpl(game));
       game.makeComputerMove();
       shouldMakeComputerMove = false;
     }
@@ -58,6 +66,14 @@ public class VisualRunner extends PApplet {
         int x = side ? c * cellWidth : (7 - c) * cellHeight;
         int y = side ? r * cellHeight : (7 - r) * cellHeight;
 
+        int light = color(255, 255, 255);
+        int dark = color(150, 220, 150);
+        if ((r % 2 == 0 && c % 2 == 0) || (r % 2 == 1 && c % 2 == 1)) {
+          fill(light);
+        } else {
+          fill(dark);
+        }
+
         rect(x, y, cellWidth, cellHeight);
         if (brd[r][c] == null) continue;
 
@@ -67,7 +83,7 @@ public class VisualRunner extends PApplet {
         boolean side = brd[r][c].side();
         switch (brd[r][c].getClass().getSimpleName()) {
           case "Pawn":
-            image(side ? drawer.whitePawnImg : drawer.blackPawnImg, x, y);
+            image(side ? drawer.whitePawnImg : drawer.blackPawnImg, x + (side ? 0 : 5), y);
             break;
           case "Knight":
             image(side ? drawer.whiteKnightImg : drawer.blackKnightImg, x, y);
@@ -137,10 +153,16 @@ public class VisualRunner extends PApplet {
       moveFrom = null;
     } else {
       if (editMode) {
-        game.getBoard().makeMove(new Move(moveFrom.r, moveFrom.c, r, c));
+        prevGameStates.push(new ChessGameImpl(game));
+        ChessBoard board = game.getBoard();
+        if (board.getBoard()[moveFrom.r][moveFrom.c] != null) {
+          board.makeMove(new Move(moveFrom.r, moveFrom.c, r, c), true);
+        }
       } else {
+        ChessGame prevGameCopy = new ChessGameImpl(game);
         boolean moveSuccessful = game.makeMove(moveFrom.r, moveFrom.c, r, c);
         if (moveSuccessful) {
+          prevGameStates.push(prevGameCopy);
           shouldMakeComputerMove = true;
           drawBoard();
           drawPrevMove();
@@ -167,6 +189,26 @@ public class VisualRunner extends PApplet {
       case ']':
         MinimaxWithABPruningBot.depth++;
         System.out.println(MinimaxWithABPruningBot.depth);
+        break;
+      case 'x':
+        System.out.println(game.pgn());
+      default:
+        // do nothing
+    }
+    switch (keyCode) {
+      case LEFT:
+        if (!prevGameStates.isEmpty()) {
+          ChessGame prevState = prevGameStates.pop();
+          futureGameStates.push(game);
+          game = prevState;
+        }
+        break;
+      case RIGHT:
+        if (!futureGameStates.isEmpty()) {
+          ChessGame nextState = futureGameStates.pop();
+          prevGameStates.push(game);
+          game = nextState;
+        }
         break;
       default:
         // do nothing

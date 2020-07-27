@@ -2,7 +2,6 @@ package game;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import piece.Bishop;
 import piece.ChessPiece;
 import piece.King;
@@ -12,6 +11,7 @@ import piece.NullMove;
 import piece.Pawn;
 import piece.Queen;
 import piece.Rook;
+import util.HashingUtils;
 import util.Pos;
 
 public class ChessBoardImpl implements ChessBoard {
@@ -23,21 +23,21 @@ public class ChessBoardImpl implements ChessBoard {
     board = new ChessPiece[8][8];
     initBoard(0, 1, false);
     initBoard(7, -1, true);
-    whiteKingPos = getKingPos(true);
-    blackKingPos = getKingPos(false);
+    whiteKingPos = findKingPos(true);
+    blackKingPos = findKingPos(false);
   }
 
   public ChessBoardImpl(ChessBoard board) {
     ChessBoardImpl otherBoard = (ChessBoardImpl)board;
     this.board = deepClone(otherBoard.getBoard());
-    whiteKingPos = getKingPos(true);
-    blackKingPos = getKingPos(false);
+    whiteKingPos = findKingPos(true);
+    blackKingPos = findKingPos(false);
   }
 
   public ChessBoardImpl(ChessPiece[][] board) {
     this.board = deepClone(board);
-    whiteKingPos = getKingPos(true);
-    blackKingPos = getKingPos(false);
+    whiteKingPos = findKingPos(true);
+    blackKingPos = findKingPos(false);
   }
 
   private ChessPiece[][] deepClone(ChessPiece[][] arr) {
@@ -106,7 +106,7 @@ public class ChessBoardImpl implements ChessBoard {
     return false;
   }
 
-  private Pos getKingPos(boolean side) {
+  private Pos findKingPos(boolean side) {
     for (int r = 0; r < 8; r++) {
       for (int c = 0; c < 8; c++) {
         if (board[r][c] != null && board[r][c] instanceof King && board[r][c].side() == side) {
@@ -119,7 +119,12 @@ public class ChessBoardImpl implements ChessBoard {
 
   @Override
   public void makeMove(Move move) {
-    move.execute(board);
+    makeMove(move, false);
+  }
+
+  @Override
+  public void makeMove(Move move, boolean editMode) {
+    move.execute(board, editMode);
     updateBoard(move);
   }
 
@@ -218,42 +223,50 @@ public class ChessBoardImpl implements ChessBoard {
   }
 
   @Override
-  public int hashCode() {
-    Random ran = new Random(50);
-    int[] keys = new int[7];
-    for (int i=0;i<7;i++) {
-      keys[i] = ran.nextInt();
+  public Pos getKingPos(boolean side) {
+    return side ? whiteKingPos : blackKingPos;
+  }
+
+  @Override
+  public String result() {
+    if (kingIsInCheck(false) && getLegalMoves(false).isEmpty()) {
+      return "1-0";
+    } else if (kingIsInCheck(true) && getLegalMoves(true).isEmpty()) {
+      return "0-1";
+    } else if ((!kingIsInCheck(false) && getLegalMoves(false).isEmpty())
+            || (!kingIsInCheck(true) && getLegalMoves(true).isEmpty())) {
+      return "1/2-1/2";
+    } else {
+      return "*";
     }
-    int hashCode = ran.nextInt();
+  }
+
+  @Override
+  public int hashCode() {
+    int hashCode = HashingUtils.ran.nextInt();
     for (int r=0;r<8;r++) {
       for (int c=0;c<8;c++) {
         int type = -1;
-        if (board[r][c] == null) {
+        ChessPiece piece = board[r][c];
+        if (piece == null) {
           type = 0;
         } else {
-          switch(board[r][c].getClass().getSimpleName()) {
-            case "Pawn":
-              type = 1;
-              break;
-            case "Knight":
-              type = 2;
-              break;
-            case "Bishop":
-              type = 3;
-              break;
-            case "Rook":
-              type = 4;
-              break;
-            case "Queen":
-              type = 5;
-              break;
-            case "King":
-              type = 6;
-              break;
+          if (piece instanceof Pawn) {
+            type = 1;
+          } else if (piece instanceof Knight) {
+            type = 2;
+          } else if (piece instanceof Bishop) {
+            type = 3;
+          } else if (piece instanceof Rook) {
+            type = 4;
+          } else if (piece instanceof Queen) {
+            type = 5;
+          } else if (piece instanceof King) {
+            type = 6;
           }
         }
         int pieceInfo = board[r][c] == null ? 0 : board[r][c].hashCode();
-        hashCode ^= keys[type] ^ Integer.hashCode(100*r + c + pieceInfo);
+        hashCode ^= HashingUtils.keys[type] ^ Integer.hashCode(100*r + c + pieceInfo);
       }
     }
     return hashCode;

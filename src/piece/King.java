@@ -10,14 +10,16 @@ import util.Utils;
 
 public class King extends AbstractChessPiece implements ChessPiece {
   private boolean hasMoved;
+  private boolean hasCastled;
 
   public King(int r, int c, boolean isWhitePiece) {
-    this(r, c, isWhitePiece, false);
+    this(r, c, isWhitePiece, false, false);
   }
 
-  public King(int r, int c, boolean isWhitePiece, boolean hasMoved) {
+  public King(int r, int c, boolean isWhitePiece, boolean hasMoved, boolean hasCastled) {
     super(r, c, isWhitePiece);
     this.hasMoved = hasMoved;
+    this.hasCastled = hasCastled;
   }
 
   @Override
@@ -39,17 +41,22 @@ public class King extends AbstractChessPiece implements ChessPiece {
     List<Move> attackMoves = new ChessBoardImpl(board).getAttackMoves(!side());
     List<Pos> passThroughSquaresShortCastle = Arrays.asList(new Pos(r, 4),
             new Pos(r, 5), new Pos(r, 6));
+    List<Pos> squaresBetweenShortCastle = Arrays.asList(new Pos(r, 5), new Pos(r, 6));
     // short castle
 
     if (!hasMoved && board[r][7] instanceof Rook && !((Rook)board[r][7]).hasMoved()
-            && !beingAttacked(passThroughSquaresShortCastle, attackMoves)) {
+            && !beingAttacked(passThroughSquaresShortCastle, attackMoves)
+            && !piecesOccupying(squaresBetweenShortCastle, board)) {
       legalMovesIgnoringChecks.add(new Move(r, c, r, 6));
     }
     // long castle
     List<Pos> passThroughSquaresLongCastle = Arrays.asList(new Pos(r, 2),
             new Pos(r, 3), new Pos(r, 4));
+    List<Pos> squaresBetweenLongCastle = Arrays.asList(new Pos(r, 1),
+            new Pos(r, 2), new Pos(r, 3));
     if (!hasMoved && board[r][0] instanceof Rook && !((Rook)board[r][0]).hasMoved()
-            && !beingAttacked(passThroughSquaresLongCastle, attackMoves)) {
+            && !beingAttacked(passThroughSquaresLongCastle, attackMoves)
+            && !piecesOccupying(squaresBetweenLongCastle, board)) {
       legalMovesIgnoringChecks.add(new Move(r, c, r, 2));
     }
     return legalMovesIgnoringChecks;
@@ -61,6 +68,15 @@ public class King extends AbstractChessPiece implements ChessPiece {
         if (p.r == m.toR && p.c == m.toC) {
           return true;
         }
+      }
+    }
+    return false;
+  }
+
+  private boolean piecesOccupying(List<Pos> passThroughSquaresLongCastle, ChessPiece[][] board) {
+    for (Pos p : passThroughSquaresLongCastle) {
+      if (board[p.r][p.c] != null) {
+        return true;
       }
     }
     return false;
@@ -78,7 +94,7 @@ public class King extends AbstractChessPiece implements ChessPiece {
 
   @Override
   public ChessPiece create(int r, int c, boolean isWhitePiece) {
-    return new King(r, c, isWhitePiece, hasMoved);
+    return new King(r, c, isWhitePiece, hasMoved, hasCastled);
   }
 
   @Override
@@ -95,5 +111,17 @@ public class King extends AbstractChessPiece implements ChessPiece {
   public void updatePieceMoved(int toR, int toC) {
     hasMoved = true;
     super.updatePieceMoved(toR, toC);
+  }
+
+  public boolean hasMoved() {
+    return hasMoved;
+  }
+
+  public void castle() {
+    hasCastled = true;
+  }
+
+  public boolean hasCastled() {
+    return hasCastled;
   }
 }

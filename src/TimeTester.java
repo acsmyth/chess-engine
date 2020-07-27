@@ -6,7 +6,7 @@ import game.ChessGameImpl;
 public class TimeTester {
   public static void main(String[] args) {
     ChessGame game = new ChessGameImpl();
-    int runs = 50;
+    int runs = 10;
     for (int i=0;i<26;i++) {
       game.makeComputerMove();
     }
