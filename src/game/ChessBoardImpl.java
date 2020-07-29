@@ -1,7 +1,9 @@
 package game;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import piece.Bishop;
 import piece.ChessPiece;
 import piece.King;
@@ -18,6 +20,7 @@ public class ChessBoardImpl implements ChessBoard {
   private final ChessPiece[][] board;
   private Pos whiteKingPos;
   private Pos blackKingPos;
+  private Set<ChessBoard> prevBoardStates;
 
   public ChessBoardImpl() {
     board = new ChessPiece[8][8];
@@ -25,6 +28,7 @@ public class ChessBoardImpl implements ChessBoard {
     initBoard(7, -1, true);
     whiteKingPos = findKingPos(true);
     blackKingPos = findKingPos(false);
+    prevBoardStates = new HashSet<>();
   }
 
   public ChessBoardImpl(ChessBoard board) {
@@ -32,12 +36,15 @@ public class ChessBoardImpl implements ChessBoard {
     this.board = deepClone(otherBoard.getBoard());
     whiteKingPos = findKingPos(true);
     blackKingPos = findKingPos(false);
+    prevBoardStates = ((ChessBoardImpl)board).prevBoardStates;
   }
 
   public ChessBoardImpl(ChessPiece[][] board) {
     this.board = deepClone(board);
     whiteKingPos = findKingPos(true);
     blackKingPos = findKingPos(false);
+    // TODO - dont have previous board states
+    x
   }
 
   private ChessPiece[][] deepClone(ChessPiece[][] arr) {

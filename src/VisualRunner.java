@@ -1,7 +1,4 @@
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
-
 import bot.MinimaxWithABPruningBot;
 import game.ChessBoard;
 import game.ChessGame;
@@ -11,6 +8,7 @@ import piece.Move;
 import processing.core.PApplet;
 import util.PieceDrawer;
 import util.Pos;
+import util.Settings;
 
 public class VisualRunner extends PApplet {
   private ChessGame game;
@@ -35,6 +33,7 @@ public class VisualRunner extends PApplet {
   }
 
   public void setup() {
+    Settings.checkExtensions = true;
     game = new ChessGameImpl();
     drawer = new PieceDrawer(this);
     moveFrom = null;
@@ -81,6 +80,7 @@ public class VisualRunner extends PApplet {
 
         rect(x, y, cellWidth, cellHeight);
         if (brd[r][c] == null) continue;
+
 
         x += cellWidth / 4;
         y += cellHeight / 6;
@@ -147,6 +147,7 @@ public class VisualRunner extends PApplet {
   }
 
   public void mousePressed() {
+    if (mouseButton != LEFT) return;
     int r = side ? mouseY / cellHeight : (7 - mouseY / cellHeight);
     int c = side ? mouseX / cellWidth : (7 - mouseX / cellWidth);
     if (game.getBoard().getBoard()[r][c] != null) {
@@ -155,6 +156,7 @@ public class VisualRunner extends PApplet {
   }
 
   public void mouseReleased() {
+    if (mouseButton != LEFT) return;
     int r = side ? mouseY / cellHeight : (7 - mouseY / cellHeight);
     int c = side ? mouseX / cellWidth : (7 - mouseX / cellWidth);
     if (moveFrom == null) return;
@@ -201,6 +203,9 @@ public class VisualRunner extends PApplet {
         break;
       case 'x':
         System.out.println(game.pgn());
+      case 't':
+        Settings.checkExtensions = !Settings.checkExtensions;
+        System.out.println("Check extensions are now " + (Settings.checkExtensions ? "on" : "off"));
       default:
         // do nothing
     }

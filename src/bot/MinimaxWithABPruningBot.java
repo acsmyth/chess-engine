@@ -7,6 +7,7 @@ import game.ChessBoard;
 import game.ChessBoardImpl;
 import piece.Move;
 import piece.NullMove;
+import util.Settings;
 
 public class MinimaxWithABPruningBot implements Bot {
   private final Evaluator evaluator;
@@ -27,7 +28,7 @@ public class MinimaxWithABPruningBot implements Bot {
   @Override
   public Move chooseMove(ChessBoard board, boolean turn) {
     MoveEvalPair result = minimax(board, turn, depth, new HashMap<>(),
-            -999999, 999999);
+            -999999, 999999, 0);
     Move chosenMove = result.move;
     if (chosenMove == null) {
       throw new IllegalArgumentException("No legal moves on the given board");
@@ -38,7 +39,7 @@ public class MinimaxWithABPruningBot implements Bot {
 
   MoveEvalPair minimax(ChessBoard board, boolean turn, int depthLeft,
                        Map<ChessBoard, MoveEvalPair> cachedEvals,
-                       double alpha, double beta) {
+                       double alpha, double beta, int extensionDepth) {
     /*if (depthLeft <= -2) {
       double eval = evaluator.evaluate(board, turn);
       MoveEvalPair pair = new MoveEvalPair(null, eval);
@@ -49,7 +50,10 @@ public class MinimaxWithABPruningBot implements Bot {
     if (depthLeft <= 0 && !captureMoves.isEmpty()) {
       return loopThroughMoves(board, captureMoves, turn, depthLeft, cachedEvals, alpha, beta);
     }*/
-    if (depthLeft <= 0) {
+
+    // -2 is hard limit
+    if ((depthLeft <= -extensionDepth && depthLeft % 2 == 0) || depthLeft <= -2
+            || (!Settings.checkExtensions && depthLeft <= 0)) {
       double eval = evaluator.evaluate(board, turn);
       MoveEvalPair pair = new MoveEvalPair(null, eval);
       return pair;
@@ -88,16 +92,15 @@ public class MinimaxWithABPruningBot implements Bot {
 
     // order legal moves
     return loopThroughMoves(board, board.getLegalMoves(turn),
-            turn, depthLeft, cachedEvals, alpha, beta);
+            turn, depthLeft, cachedEvals, alpha, beta, extensionDepth);
   }
 
   private MoveEvalPair loopThroughMoves(ChessBoard board, List<Move> legalMoves, boolean turn,
                                         int depthLeft, Map<ChessBoard, MoveEvalPair> cachedEvals,
-                                        double alpha, double beta) {
+                                        double alpha, double beta, int extensionDepth) {
     /*if (cachedEvals.containsKey(board)) {
       return cachedEvals.get(board);
     }*/
-
     Move bestMove = null;
     double bestEval = turn ? -999999999 : 999999999;
     double newAlpha = alpha;
@@ -134,11 +137,14 @@ public class MinimaxWithABPruningBot implements Bot {
       //}
 
       // check extension / positive delta extension
-      if (newBoard.kingIsInCheck(true) || newBoard.kingIsInCheck(false)) {
-        nextDepth++;
+      int nextExtensionDepth = extensionDepth;
+      if (Settings.checkExtensions
+              && (newBoard.kingIsInCheck(true) || newBoard.kingIsInCheck(false))) {
+        nextExtensionDepth++;
       }
 
-      double eval = minimax(newBoard, !turn, nextDepth, cachedEvals, newAlpha, newBeta).eval;
+      double eval = minimax(newBoard, !turn, nextDepth, cachedEvals, newAlpha, newBeta,
+              nextExtensionDepth).eval;
 
       // alpha cutoff
       if (!turn && eval < alpha) {

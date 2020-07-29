@@ -1,17 +1,6 @@
 import java.util.Scanner;
-
-import game.ChessBoard;
-import game.ChessBoardImpl;
 import game.ChessGame;
 import game.ChessGameImpl;
-import piece.Bishop;
-import piece.ChessPiece;
-import piece.King;
-import piece.Knight;
-import piece.Move;
-import piece.Pawn;
-import piece.Queen;
-import piece.Rook;
 
 public class TextRunner {
   public static void main(String[] args) {

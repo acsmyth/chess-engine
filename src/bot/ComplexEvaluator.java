@@ -3,15 +3,18 @@ package bot;
 import game.ChessBoard;
 import piece.ChessPiece;
 import piece.King;
+import piece.Knight;
 import piece.Move;
 import piece.Queen;
 import piece.Rook;
 import util.Pos;
+import util.Utils;
 
 public class ComplexEvaluator implements Evaluator {
   @Override
   public double evaluate(ChessBoard board, boolean turn) {
     ChessPiece[][] brd = board.getBoard();
+    double totalMaterial = 0;
     double eval = 0;
     for (int r = 0; r < 8; r++) {
       for (int c = 0; c < 8; c++) {
@@ -38,11 +41,16 @@ public class ComplexEvaluator implements Evaluator {
               break;
           }
           eval += valChange * brd[r][c].sideAsInt();
+          if (!(brd[r][c] instanceof King)) {
+            totalMaterial += valChange;
+          }
 
-          if (!(brd[r][c] instanceof King) && !(brd[r][c] instanceof Queen) && !(brd[r][c] instanceof Rook)) {
+
+          if (!(brd[r][c] instanceof King) && !(brd[r][c] instanceof Queen)
+                  && !(brd[r][c] instanceof Rook)) {
             for (Move m : brd[r][c].getAttackMoves(board.getBoard())) {
               if (inCenter(m.toR, m.toC)) {
-                eval += brd[r][c].sideAsInt() / 10.0;
+                eval += brd[r][c].sideAsInt() / 8.0;
               }
               if (inInnerRingOutsideCenter(m.toR, m.toC)) {
                 eval += brd[r][c].sideAsInt() / 20.0;
@@ -56,27 +64,60 @@ public class ComplexEvaluator implements Evaluator {
     // tempo bonus
     eval += turn ? 0.25 : -0.25;
 
-    // ability to castle - king hasn't moved yet
+    // if king moves before castling, very bad
     Pos whiteKingPos = board.getKingPos(turn);
     boolean whiteKingHasMoved = ((King)brd[whiteKingPos.r][whiteKingPos.c]).hasMoved();
     Pos blackKingPos = board.getKingPos(turn);
     boolean blackKingHasMoved = ((King)brd[blackKingPos.r][blackKingPos.c]).hasMoved();
-
-    eval += whiteKingHasMoved ? -0.25 : 0;
-    eval += blackKingHasMoved ? 0.25 : 0;
-
-    // however this will make it not want to castle, so need to offset it with
-    // a benefit for rook mobility / not being blocked by the king
     boolean whiteHasCastled = ((King)brd[whiteKingPos.r][whiteKingPos.c]).hasCastled();
     boolean blackHasCastled = ((King)brd[blackKingPos.r][blackKingPos.c]).hasCastled();
 
-    eval += whiteHasCastled ? 0.9 : 0;
-    eval += blackHasCastled ? -0.9 : 0;
+    eval += whiteKingHasMoved && !whiteHasCastled ? -1.5 : 0;
+    eval += blackKingHasMoved && !blackHasCastled ? 1.5 : 0;
 
-    // number of legal moves is slightly good - maybe excluding queen
+    // however this will make it not want to castle, so need to offset it with
+    // a benefit for rook mobility / not being blocked by the king
+
+    // depends on total material - max material is about 78
+    eval += whiteHasCastled ? 2.0 * totalMaterial / 78.0: 0;
+    eval += blackHasCastled ? -2.0 * totalMaterial / 78.0: 0;
+
+    // number of legal moves is slightly good
     eval += board.getAttackMoves(true).size() / 30.0;
     eval += -board.getAttackMoves(false).size() / 30.0;
 
+    // having knights on the back row is bad
+    for (int c=0;c<8;c++) {
+      if (brd[7][c] != null && brd[7][c].side() && brd[7][c] instanceof Knight) {
+        eval += -1 / 10.0;
+      }
+    }
+
+    for (int c=0;c<8;c++) {
+      if (brd[0][c] != null && !brd[0][c].side() && brd[0][c] instanceof Knight) {
+        eval += 1 / 10.0;
+      }
+    }
+
+    // king safety
+
+    // back row is good
+    if (whiteKingPos.r == 7) eval += 1 / 3.0;
+    // nearby allied pieces or walls is good
+    for (Pos p : whiteKingPos.neighbors()) {
+      if (!Utils.inBounds(p.r, p.c) || (brd[p.r][p.c] != null && brd[p.r][p.c].side())) {
+        eval += 1 / 5.0;
+      }
+    }
+
+    // back row is good
+    if (blackKingPos.r == 0) eval += -1 / 3.0;
+    // nearby allied pieces or walls is good
+    for (Pos p : blackKingPos.neighbors()) {
+      if (!Utils.inBounds(p.r, p.c) || (brd[p.r][p.c] != null && !brd[p.r][p.c].side())) {
+        eval += -1 / 5.0;
+      }
+    }
 
 
     // random
