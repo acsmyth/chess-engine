@@ -28,7 +28,7 @@ public class MinimaxWithABPruningBot implements Bot {
   @Override
   public Move chooseMove(ChessBoard board, boolean turn) {
     MoveEvalPair result = minimax(board, turn, depth, new HashMap<>(),
-            -999999, 999999, 0);
+            -999999999, 999999999, 0);
     Move chosenMove = result.move;
     if (chosenMove == null) {
       throw new IllegalArgumentException("No legal moves on the given board");
@@ -160,8 +160,8 @@ public class MinimaxWithABPruningBot implements Bot {
       }
 
       if (!(m instanceof NullMove)) {
-        bestEval = turn ? Math.max(eval, bestEval) : Math.min(eval, bestEval);
-        if (eval == bestEval) {
+        if ((turn && eval > bestEval) || (!turn && eval < bestEval)) {
+          bestEval = eval;
           bestMove = m;
         }
       }

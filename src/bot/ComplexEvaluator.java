@@ -5,6 +5,7 @@ import piece.ChessPiece;
 import piece.King;
 import piece.Knight;
 import piece.Move;
+import piece.Pawn;
 import piece.Queen;
 import piece.Rook;
 import util.Pos;
@@ -28,7 +29,7 @@ public class ComplexEvaluator implements Evaluator {
               valChange = 3;
               break;
             case "Bishop":
-              valChange = 3.05;
+              valChange = 3.1;
               break;
             case "Rook":
               valChange = 5;
@@ -78,9 +79,9 @@ public class ComplexEvaluator implements Evaluator {
     // however this will make it not want to castle, so need to offset it with
     // a benefit for rook mobility / not being blocked by the king
 
-    // depends on total material - max material is about 78
-    eval += whiteHasCastled ? 2.0 * totalMaterial / 78.0: 0;
-    eval += blackHasCastled ? -2.0 * totalMaterial / 78.0: 0;
+    // depends on total material - max material is about 78.4
+    eval += whiteHasCastled ? 2.0 * totalMaterial / 78.4: 0;
+    eval += blackHasCastled ? -2.0 * totalMaterial / 78.4: 0;
 
     // number of legal moves is slightly good
     eval += board.getAttackMoves(true).size() / 30.0;
@@ -119,9 +120,35 @@ public class ComplexEvaluator implements Evaluator {
       }
     }
 
+    // the farther up a pawn is in a file without a matching opponent pawn, the better
+    // this also scales inversely with material - less material on the board
+    // makes having pushed pawns better
+    for (int c=0;c<8;c++) {
+      boolean whiteHasPawn = false;
+      boolean blackHasPawn = false;
+      int whitePawnR = 8;
+      int blackPawnR = -1;
+      for (int r=6;r>=1;r--) {
+        if (brd[r][c] instanceof Pawn) {
+          if (brd[r][c].side()) {
+            whiteHasPawn = true;
+            whitePawnR = Math.min(r, whitePawnR);
+          } else {
+            blackHasPawn = true;
+            blackPawnR = Math.max(r, blackPawnR);
+          }
+        }
+      }
+      if (whiteHasPawn && !blackHasPawn) {
+        eval += 1.5 * ((6 - whitePawnR) / 6.0) * (78.4 - totalMaterial) / 78.4;
+      } else if (!whiteHasPawn && blackHasPawn) {
+        eval += -1.5 * ((blackPawnR - 1) / 6.0) * (78.4 - totalMaterial) / 78.4;
+      }
+    }
+
 
     // random
-    eval += Math.random() < 0.5 ? Math.random() / 20 : -Math.random() / 20;
+    eval += Math.random() < 0.5 ? Math.random() / 100.0 : -Math.random() / 100.0;
 
     return eval;
   }

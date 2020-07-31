@@ -134,7 +134,7 @@ public class VisualRunner extends PApplet {
 
   private void drawBoardEval() {
     double eval = game.getPrevEval();
-    float whiteProportion = (float)(1.0 / (1.0 + Math.pow(1.5, -eval)));
+    float whiteProportion = (float)(1.0 / (1.0 + Math.pow(1.3, -eval)));
     int white = color(255, 255, 255);
     int black = color(0, 0, 0);
     fill(side ? white : black);
@@ -203,9 +203,11 @@ public class VisualRunner extends PApplet {
         break;
       case 'x':
         System.out.println(game.pgn());
+        break;
       case 't':
         Settings.checkExtensions = !Settings.checkExtensions;
         System.out.println("Check extensions are now " + (Settings.checkExtensions ? "on" : "off"));
+        break;
       default:
         // do nothing
     }

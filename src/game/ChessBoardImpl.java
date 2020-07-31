@@ -44,7 +44,7 @@ public class ChessBoardImpl implements ChessBoard {
     whiteKingPos = findKingPos(true);
     blackKingPos = findKingPos(false);
     // TODO - dont have previous board states
-    x
+    //x
   }
 
   private ChessPiece[][] deepClone(ChessPiece[][] arr) {

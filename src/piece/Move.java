@@ -70,6 +70,7 @@ public class Move {
     if (this instanceof NullMove) return "NULL";
     String pgn = "";
 
+    boolean isKing = board[fromR][fromC] instanceof King;
     if (board[fromR][fromC] instanceof Pawn
             && board[fromR][toC] instanceof Pawn
             && board[fromR][fromC].side() != board[fromR][toC].side()
@@ -86,7 +87,7 @@ public class Move {
       if (isCaptureMove(board)) {
         pgn = pgnCol(fromC) + "x" + pgnCol(toC) + pgnRow(toR) + "=Q";
       } else {
-        pgn = pgnCol(toC) + pgnCol(toR) + "=Q";
+        pgn = pgnCol(toC) + pgnRow(toR) + "=Q";
       }
     // if pawn non capture move, just e4
     } else if (board[fromR][fromC] instanceof Pawn && !isCaptureMove(board)) {
@@ -96,10 +97,10 @@ public class Move {
       pgn = pgnCol(fromC) + "x" + pgnCol(toC) + pgnRow(toR);
     // if non-pawn non capture move, Nc4
     } else if (!isCaptureMove(board)) {
-      pgn = board[fromR][fromC].display() + pgnCol(toC) + pgnRow(toR);
+      pgn = board[fromR][fromC].display() + (isKing ? "" : pgnCol(fromC)) + pgnCol(toC) + pgnRow(toR);
     // if non-pawn capture move, Nxc4
     } else if (isCaptureMove(board)) {
-      pgn = board[fromR][fromC].display() + "x" + pgnCol(toC) + pgnRow(toR);
+      pgn = board[fromR][fromC].display() + (isKing ? "" : pgnCol(fromC)) + "x" + pgnCol(toC) + pgnRow(toR);
     }
 
     // additions:
