@@ -98,9 +98,6 @@ public class MinimaxWithABPruningBot implements Bot {
   private MoveEvalPair loopThroughMoves(ChessBoard board, List<Move> legalMoves, boolean turn,
                                         int depthLeft, Map<ChessBoard, MoveEvalPair> cachedEvals,
                                         double alpha, double beta, int extensionDepth) {
-    /*if (cachedEvals.containsKey(board)) {
-      return cachedEvals.get(board);
-    }*/
     Move bestMove = null;
     double bestEval = turn ? -999999999 : 999999999;
     double newAlpha = alpha;
@@ -116,12 +113,19 @@ public class MinimaxWithABPruningBot implements Bot {
     if (legalMoves.isEmpty()) {
       if (board.kingIsInCheck(turn)) {
         MoveEvalPair pair = new MoveEvalPair(null, turn ? -999999 - depthLeft : 999999 + depthLeft);
+        //cachedEvals.put(board, pair);
         return pair;
       } else {
         MoveEvalPair pair = new MoveEvalPair(null, 0);
+        //cachedEvals.put(board, pair);
         return pair;
       }
     }
+
+    /*if (board.numBoardStateRepeats() >= 3) {
+      return new MoveEvalPair(null, 0);
+    }*/
+
 
     for (Move m : legalMoves) {
       ChessBoard newBoard = new ChessBoardImpl(board);

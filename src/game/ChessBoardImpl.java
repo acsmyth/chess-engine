@@ -1,9 +1,9 @@
 package game;
 
 import java.util.ArrayList;
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
+import java.util.Map;
 import piece.Bishop;
 import piece.ChessPiece;
 import piece.King;
@@ -20,7 +20,8 @@ public class ChessBoardImpl implements ChessBoard {
   private final ChessPiece[][] board;
   private Pos whiteKingPos;
   private Pos blackKingPos;
-  private Set<ChessBoard> prevBoardStates;
+  private Map<ChessBoard, Integer> prevBoardStates;
+  private Integer cachedHashCode;
 
   public ChessBoardImpl() {
     board = new ChessPiece[8][8];
@@ -28,7 +29,8 @@ public class ChessBoardImpl implements ChessBoard {
     initBoard(7, -1, true);
     whiteKingPos = findKingPos(true);
     blackKingPos = findKingPos(false);
-    prevBoardStates = new HashSet<>();
+    prevBoardStates = new HashMap<>();
+    cachedHashCode = null;
   }
 
   public ChessBoardImpl(ChessBoard board) {
@@ -36,15 +38,18 @@ public class ChessBoardImpl implements ChessBoard {
     this.board = deepClone(otherBoard.getBoard());
     whiteKingPos = findKingPos(true);
     blackKingPos = findKingPos(false);
-    prevBoardStates = ((ChessBoardImpl)board).prevBoardStates;
+    prevBoardStates = new HashMap<>(((ChessBoardImpl)board).prevBoardStates);
+    cachedHashCode = ((ChessBoardImpl) board).cachedHashCode;
   }
+
 
   public ChessBoardImpl(ChessPiece[][] board) {
     this.board = deepClone(board);
     whiteKingPos = findKingPos(true);
     blackKingPos = findKingPos(false);
-    // TODO - dont have previous board states
-    //x
+    prevBoardStates = new HashMap<>();
+    // TODO - dont have previous board states - maybe work anyway? or change everything to use ChessBoards
+    cachedHashCode = null;
   }
 
   private ChessPiece[][] deepClone(ChessPiece[][] arr) {
@@ -133,6 +138,10 @@ public class ChessBoardImpl implements ChessBoard {
   public void makeMove(Move move, boolean editMode) {
     move.execute(board, editMode);
     updateBoard(move);
+    /*if (!editMode) {
+      prevBoardStates.put(this, prevBoardStates.getOrDefault(this, 0) + 1);
+    }*/
+    cachedHashCode = null;
   }
 
   private void updateBoard(Move move) {
@@ -249,8 +258,14 @@ public class ChessBoardImpl implements ChessBoard {
   }
 
   @Override
+  public int numBoardStateRepeats() {
+    return prevBoardStates.getOrDefault(this, 1);
+  }
+
+  @Override
   public int hashCode() {
-    int hashCode = HashingUtils.ran.nextInt();
+    if (cachedHashCode != null) return cachedHashCode;
+    int hashCode = HashingUtils.ranStartInt;
     for (int r=0;r<8;r++) {
       for (int c=0;c<8;c++) {
         int type = -1;
@@ -276,6 +291,7 @@ public class ChessBoardImpl implements ChessBoard {
         hashCode ^= HashingUtils.keys[type] ^ Integer.hashCode(100*r + c + pieceInfo);
       }
     }
+    cachedHashCode = hashCode;
     return hashCode;
   }
 

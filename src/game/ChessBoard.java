@@ -29,4 +29,6 @@ public interface ChessBoard {
   Pos getKingPos(boolean side);
 
   String result();
+
+  int numBoardStateRepeats();
 }

@@ -123,11 +123,13 @@ public class ComplexEvaluator implements Evaluator {
     // the farther up a pawn is in a file without a matching opponent pawn, the better
     // this also scales inversely with material - less material on the board
     // makes having pushed pawns better
+    int bestWhitePawnR = 8;
+    int bestBlackPawnR = -1;
     for (int c=0;c<8;c++) {
-      boolean whiteHasPawn = false;
-      boolean blackHasPawn = false;
       int whitePawnR = 8;
       int blackPawnR = -1;
+      boolean whiteHasPawn = false;
+      boolean blackHasPawn = false;
       for (int r=6;r>=1;r--) {
         if (brd[r][c] instanceof Pawn) {
           if (brd[r][c].side()) {
@@ -139,12 +141,14 @@ public class ComplexEvaluator implements Evaluator {
           }
         }
       }
-      if (whiteHasPawn && !blackHasPawn) {
-        eval += 1.5 * ((6 - whitePawnR) / 6.0) * (78.4 - totalMaterial) / 78.4;
-      } else if (!whiteHasPawn && blackHasPawn) {
-        eval += -1.5 * ((blackPawnR - 1) / 6.0) * (78.4 - totalMaterial) / 78.4;
+      if (whiteHasPawn && !blackHasPawn && whitePawnR < bestWhitePawnR) {
+        bestWhitePawnR = whitePawnR;
+      } else if (!whiteHasPawn && blackHasPawn && blackPawnR > bestBlackPawnR) {
+        bestBlackPawnR = blackPawnR;
       }
     }
+    eval += 1.5 * ((6 - bestWhitePawnR) / 6.0) * (78.4 - totalMaterial) / 78.4;
+    eval += -1.5 * ((bestBlackPawnR - 1) / 6.0) * (78.4 - totalMaterial) / 78.4;
 
 
     // random

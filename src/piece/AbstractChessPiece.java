@@ -98,6 +98,6 @@ public abstract class AbstractChessPiece implements ChessPiece {
 
   @Override
   public int hashCode() {
-    return Integer.hashCode(isWhitePiece ? 10 : -10);
+    return Integer.hashCode(isWhitePiece ? 7 : -10);
   }
 }

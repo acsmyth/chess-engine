@@ -28,7 +28,7 @@ public class Move {
 
   @Override
   public int hashCode() {
-    return Integer.hashCode(fromR + fromC + toR + toC);
+    return Integer.hashCode(fromR*1000 + fromC*100 + toR*9 + toC*7);
   }
 
   public void execute(ChessPiece[][] board) {

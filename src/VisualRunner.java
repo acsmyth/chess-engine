@@ -9,6 +9,7 @@ import processing.core.PApplet;
 import util.PieceDrawer;
 import util.Pos;
 import util.Settings;
+import util.Utils;
 
 public class VisualRunner extends PApplet {
   private ChessGame game;
@@ -150,7 +151,7 @@ public class VisualRunner extends PApplet {
     if (mouseButton != LEFT) return;
     int r = side ? mouseY / cellHeight : (7 - mouseY / cellHeight);
     int c = side ? mouseX / cellWidth : (7 - mouseX / cellWidth);
-    if (game.getBoard().getBoard()[r][c] != null) {
+    if (Utils.inBounds(r, c) && game.getBoard().getBoard()[r][c] != null) {
       moveFrom = new Pos(r, c);
     }
   }
@@ -160,6 +161,7 @@ public class VisualRunner extends PApplet {
     int r = side ? mouseY / cellHeight : (7 - mouseY / cellHeight);
     int c = side ? mouseX / cellWidth : (7 - mouseX / cellWidth);
     if (moveFrom == null) return;
+    if (!Utils.inBounds(r, c)) return;
     if (r == moveFrom.r && c == moveFrom.c) {
       moveFrom = null;
     } else {

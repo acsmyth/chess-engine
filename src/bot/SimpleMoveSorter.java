@@ -1,9 +1,12 @@
 package bot;
 
 import java.util.List;
+import java.util.Map;
+
 import game.ChessBoard;
 import piece.ChessPiece;
 import piece.Move;
+import util.Pair;
 
 public class SimpleMoveSorter implements MoveSorter {
   @Override
@@ -41,5 +44,22 @@ public class SimpleMoveSorter implements MoveSorter {
   @Override
   public int evalDelta(Move m, ChessPiece[][] brd) {
     return eval(m.toR, m.toC, brd) - eval(m.fromR, m.fromC, brd);
+  }
+
+  @Override
+  public void sortWithSpecialPriority(ChessBoard origBoard,
+                                      List<IterativeDeepeningBot.GameTree> children,
+                                      Move pvMove,
+                                      Pair<Map<Move, Float>, Map<Move, Float>> historyHeuristicTable,
+                                      boolean turn) {
+    Map<Move, Float> historyTable = turn ? historyHeuristicTable.x : historyHeuristicTable.y;
+    children.sort((t1, t2) -> {
+      ChessPiece[][] brd = origBoard.getBoard();
+      return Math.max(0, evalDelta(t2.moveCameFrom, brd))
+              - Math.max(0, evalDelta(t1.moveCameFrom, brd))
+              + (t2.moveCameFrom == pvMove ? 100 : 0) + (t1.moveCameFrom == pvMove ? -100 : 0)
+              + (int)(Math.sqrt(historyTable.getOrDefault(t2.moveCameFrom, (float)0) / 100.0 + 0.99))
+              - (int)(Math.sqrt(historyTable.getOrDefault(t1.moveCameFrom, (float)0) / 100.0 + 0.99));
+    });
   }
 }
