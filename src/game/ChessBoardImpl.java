@@ -265,30 +265,37 @@ public class ChessBoardImpl implements ChessBoard {
   @Override
   public int hashCode() {
     if (cachedHashCode != null) return cachedHashCode;
-    int hashCode = HashingUtils.ranStartInt;
+    int hashCode = 0;
     for (int r=0;r<8;r++) {
       for (int c=0;c<8;c++) {
-        int type = -1;
+        if (board[r][c] == null) continue;
+        int type;
         ChessPiece piece = board[r][c];
-        if (piece == null) {
+        if (piece instanceof Pawn && ((Pawn)piece).justAdvancedTwoSquares()) { // can be captured en passant
           type = 0;
+        } else if (piece instanceof Pawn) { // can't be captured en passant
+          type = 1;
+        } else if (piece instanceof Knight) {
+          type = 2;
+        } else if (piece instanceof Bishop) {
+          type = 3;
+        } else if (piece instanceof Rook && !((Rook)piece).hasMoved()) { // can castle
+          type = 4;
+        } else if (piece instanceof Rook) { // can't castle
+          type = 5;
+        } else if (piece instanceof Queen) {
+          type = 6;
+        } else if (piece instanceof King && !((King)piece).hasMoved()) { // can castle
+          type = 7;
+        } else if (piece instanceof King) { // can't castle
+          type = 8;
         } else {
-          if (piece instanceof Pawn) {
-            type = 1;
-          } else if (piece instanceof Knight) {
-            type = 2;
-          } else if (piece instanceof Bishop) {
-            type = 3;
-          } else if (piece instanceof Rook) {
-            type = 4;
-          } else if (piece instanceof Queen) {
-            type = 5;
-          } else if (piece instanceof King) {
-            type = 6;
-          }
+          throw new RuntimeException();
         }
-        int pieceInfo = board[r][c] == null ? 0 : board[r][c].hashCode();
-        hashCode ^= HashingUtils.keys[type] ^ Integer.hashCode(100*r + c + pieceInfo);
+        if (!piece.side()) {
+          type += 9; // white pieces are 0-8, black pieces are 9-17
+        }
+        hashCode ^= HashingUtils.table[type][r * 8 + c];
       }
     }
     cachedHashCode = hashCode;
@@ -297,6 +304,10 @@ public class ChessBoardImpl implements ChessBoard {
 
   @Override
   public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof ChessBoardImpl)) return false;
+    return this.hashCode() == o.hashCode();
+    /*
     if (this == o) return true;
     if (!(o instanceof ChessBoardImpl)) return false;
     ChessPiece[][] other = ((ChessBoardImpl)o).getBoard();
@@ -315,5 +326,6 @@ public class ChessBoardImpl implements ChessBoard {
       }
     }
     return true;
+    */
   }
 }

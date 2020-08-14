@@ -98,12 +98,13 @@ public class MinimaxWithABPruningBot implements Bot {
   private MoveEvalPair loopThroughMoves(ChessBoard board, List<Move> legalMoves, boolean turn,
                                         int depthLeft, Map<ChessBoard, MoveEvalPair> cachedEvals,
                                         double alpha, double beta, int extensionDepth) {
+    //if (cachedEvals.containsKey(board)) {
+    //  return cachedEvals.get(board);
+    //}
     Move bestMove = null;
     double bestEval = turn ? -999999999 : 999999999;
     double newAlpha = alpha;
     double newBeta = beta;
-
-    moveSorter.sort(legalMoves, board);
 
     // add the null move to beginning only at max depth
     //if (depthLeft == depth || depthLeft == depth-1 || depthLeft == depth-2) {
@@ -126,9 +127,12 @@ public class MinimaxWithABPruningBot implements Bot {
       return new MoveEvalPair(null, 0);
     }*/
 
-
+    moveSorter.sort(legalMoves, board);
     for (Move m : legalMoves) {
       ChessBoard newBoard = new ChessBoardImpl(board);
+
+      // TODO - feed the board new hashcode information, since this move lets us just xor whatever
+      //  changed only to save time
       newBoard.makeMove(m);
 
       //if (cachedEvals.containsKey(newBoard)) {
@@ -153,13 +157,13 @@ public class MinimaxWithABPruningBot implements Bot {
       // alpha cutoff
       if (!turn && eval < alpha) {
         MoveEvalPair pair = new MoveEvalPair(m, eval);
-        //cachedEvals.put(newBoard, pair);
+        cachedEvals.put(newBoard, pair);
         return pair;
       }
       // beta cutoff
       if (turn && eval > beta) {
         MoveEvalPair pair = new MoveEvalPair(m, eval);
-        //cachedEvals.put(newBoard, pair);
+        cachedEvals.put(newBoard, pair);
         return pair;
       }
 

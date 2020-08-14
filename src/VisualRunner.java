@@ -1,3 +1,5 @@
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 import bot.MinimaxWithABPruningBot;
 import game.ChessBoard;
@@ -6,6 +8,7 @@ import game.ChessGameImpl;
 import piece.ChessPiece;
 import piece.Move;
 import processing.core.PApplet;
+import util.Pair;
 import util.PieceDrawer;
 import util.Pos;
 import util.Settings;
@@ -23,6 +26,8 @@ public class VisualRunner extends PApplet {
   private static final int sidebarWidth = 30;
   private Stack<ChessGame> prevGameStates;
   private Stack<ChessGame> futureGameStates;
+  private Pos drawArrowFrom;
+  private List<Pair<Pos, Pos>> arrows;
 
   // TODO - null move pruning, move ordering, extensions for captures (quiescence search)
   public static void main(String[] args) {
@@ -45,6 +50,8 @@ public class VisualRunner extends PApplet {
     side = true;
     prevGameStates = new Stack<>();
     futureGameStates = new Stack<>();
+    drawArrowFrom = null;
+    arrows = new ArrayList<>();
     drawBoard();
     drawPrevMove();
     drawBoardEval();
@@ -54,6 +61,7 @@ public class VisualRunner extends PApplet {
     drawBoard();
     drawPrevMove();
     drawBoardEval();
+    drawArrows();
     if (shouldMakeComputerMove) {
       ChessGame savedCopy = new ChessGameImpl(game);
       if (game.makeComputerMove()) {
@@ -147,40 +155,74 @@ public class VisualRunner extends PApplet {
     fill(255, 255, 255);
   }
 
+  private void drawArrows() {
+    int half = cellWidth / 2;
+    for (Pair<Pos, Pos> arrow : arrows) {
+      int r1 = side ? arrow.x.r : (7 - arrow.x.r);
+      int c1 = side ? arrow.x.c : (7 - arrow.x.c);
+      int r2 = side ? arrow.y.r : (7 - arrow.y.r);
+      int c2 = side ? arrow.y.c : (7 - arrow.y.c);
+
+      stroke(0,0,255,150);
+      strokeWeight(12);
+      line(c1 * cellWidth + half, r1 * cellWidth + half,
+              c2 * cellWidth + half, r2 * cellWidth + half);
+      fill(0,0,255);
+      noStroke();
+      pushMatrix();
+      translate(c2 * cellWidth + half, r2 * cellWidth + half);
+      rotate(atan2(r2 - r1, c2 - c1) + PI/2);
+      /*triangle(arrow.y.c * tileW, (arrow.y.r + 1) * tileW,
+              arrow.y.c * tileW + half, arrow.y.r * tileW,
+              (arrow.y.c + 1) * tileW, (arrow.y.r + 1) * tileW);*/
+      int dist = cellWidth / 8;
+      triangle(-dist, dist, 0, -dist, dist, dist);
+      popMatrix();
+    }
+  }
+
   public void mousePressed() {
-    if (mouseButton != LEFT) return;
     int r = side ? mouseY / cellHeight : (7 - mouseY / cellHeight);
     int c = side ? mouseX / cellWidth : (7 - mouseX / cellWidth);
-    if (Utils.inBounds(r, c) && game.getBoard().getBoard()[r][c] != null) {
+    if (Utils.inBounds(r, c) && game.getBoard().getBoard()[r][c] != null && mouseButton == LEFT) {
       moveFrom = new Pos(r, c);
+    }
+    if (Utils.inBounds(r, c) && mouseButton == RIGHT) {
+      drawArrowFrom = new Pos(r, c);
     }
   }
 
   public void mouseReleased() {
-    if (mouseButton != LEFT) return;
     int r = side ? mouseY / cellHeight : (7 - mouseY / cellHeight);
     int c = side ? mouseX / cellWidth : (7 - mouseX / cellWidth);
-    if (moveFrom == null) return;
     if (!Utils.inBounds(r, c)) return;
-    if (r == moveFrom.r && c == moveFrom.c) {
-      moveFrom = null;
-    } else {
-      if (editMode) {
-        prevGameStates.push(new ChessGameImpl(game));
-        ChessBoard board = game.getBoard();
-        if (board.getBoard()[moveFrom.r][moveFrom.c] != null) {
-          board.makeMove(new Move(moveFrom.r, moveFrom.c, r, c), true);
-        }
+    if (mouseButton == LEFT) arrows.clear();
+    if (mouseButton == LEFT && moveFrom != null) {
+      if (r == moveFrom.r && c == moveFrom.c) {
+        moveFrom = null;
       } else {
-        ChessGame prevGameCopy = new ChessGameImpl(game);
-        boolean moveSuccessful = game.makeMove(moveFrom.r, moveFrom.c, r, c);
-        if (moveSuccessful) {
-          prevGameStates.push(prevGameCopy);
-          shouldMakeComputerMove = true;
-          drawBoard();
-          drawPrevMove();
+        if (editMode) {
+          prevGameStates.push(new ChessGameImpl(game));
+          ChessBoard board = game.getBoard();
+          if (board.getBoard()[moveFrom.r][moveFrom.c] != null) {
+            board.makeMove(new Move(moveFrom.r, moveFrom.c, r, c), true);
+          }
+        } else {
+          ChessGame prevGameCopy = new ChessGameImpl(game);
+          boolean moveSuccessful = game.makeMove(moveFrom.r, moveFrom.c, r, c);
+          if (moveSuccessful) {
+            prevGameStates.push(prevGameCopy);
+            shouldMakeComputerMove = true;
+            drawBoard();
+            drawPrevMove();
+          }
         }
       }
+    } else if (mouseButton == RIGHT) {
+      if (r != drawArrowFrom.r || c != drawArrowFrom.c) {
+        arrows.add(new Pair<>(drawArrowFrom, new Pos(r, c)));
+      }
+      drawArrowFrom = null;
     }
   }
 

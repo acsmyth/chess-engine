@@ -7,7 +7,7 @@ public class TimeTester {
   public static void main(String[] args) {
     ChessGame game = new ChessGameImpl();
     int runs = 10;
-    for (int i=0;i<26;i++) {
+    for (int i=0;i<5;i++) {
       game.makeComputerMove();
     }
     game.display();
@@ -16,7 +16,9 @@ public class TimeTester {
     for (int n=0;n<runs;n++) {
       ChessGame copy = new ChessGameImpl(game);
       long startTime = System.currentTimeMillis();
+
       copy.makeComputerMove();
+
       long endTime = System.currentTimeMillis();
       totalTime += (endTime - startTime);
       times.add(endTime - startTime);
@@ -37,6 +39,11 @@ public class TimeTester {
 
     // 1 NULL MOVE
     // 1855, 1762, 1735, 1717
+
+    // WITHOUT TT:
+    // 560 ms per run
+    // WITH ZOBRIST HASHING TT:
+    // 560 ms per run
 
     // HASHSET INSTEAD OF LIST, NO NULL MOVE PRUNING
   }
