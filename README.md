@@ -1,3 +1,3 @@
 # chess-engine-new
 
-![](https://github.com/ACSmyth/chess-engine-new/blob/media/initial_board.png)
+![](https://github.com/ACSmyth/chess-engine-new/blob/media/initial_board.PNG)
