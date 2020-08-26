@@ -12,8 +12,8 @@ public class ChessGameImpl implements ChessGame {
   private boolean turn;
   private final Bot engine;
   private Move prevMove;
-  private List<Move> movesMade;
-  private List<ChessBoard> boardStates;
+  private final List<Move> movesMade;
+  private final List<ChessBoard> boardStates;
 
   public ChessGameImpl() {
     board = new ChessBoardImpl();

@@ -146,6 +146,7 @@ public class VisualRunner extends PApplet {
     float whiteProportion = (float)(1.0 / (1.0 + Math.pow(1.3, -eval)));
     int white = color(255, 255, 255);
     int black = color(0, 0, 0);
+    noStroke();
     fill(side ? white : black);
     rect(width - sidebarWidth, (side ? (1 - whiteProportion) : whiteProportion) * height,
             sidebarWidth, (side ? whiteProportion : (1 - whiteProportion)) * height);
@@ -251,6 +252,14 @@ public class VisualRunner extends PApplet {
       case 't':
         Settings.checkExtensions = !Settings.checkExtensions;
         System.out.println("Check extensions are now " + (Settings.checkExtensions ? "on" : "off"));
+        break;
+      case 'q':
+        System.out.println(game.getBoard().hashCode());
+        break;
+      case 'z':
+        int r = side ? mouseY / cellHeight : (7 - mouseY / cellHeight);
+        int c = side ? mouseX / cellWidth : (7 - mouseX / cellWidth);
+        System.out.println(r + "," + c);
         break;
       default:
         // do nothing

@@ -3,7 +3,7 @@ package util;
 import java.util.Random;
 
 public class HashingUtils {
-  public static Random ran = new Random();
+  public static Random ran = new Random(77);
   public static long[][] table = new long[18][64];
 
   static {

@@ -12,6 +12,7 @@ import util.Settings;
 public class MinimaxWithABPruningBot implements Bot {
   private final Evaluator evaluator;
   private final MoveSorter moveSorter;
+  private final OpeningBook openingBook;
   public static int depth;
   private double prevEval;
 
@@ -22,11 +23,16 @@ public class MinimaxWithABPruningBot implements Bot {
   public MinimaxWithABPruningBot() {
     evaluator = new ComplexEvaluator();
     moveSorter = new SimpleMoveSorter();
+    openingBook = new SimpleOpeningBook();
     prevEval = 0;
   }
 
   @Override
   public Move chooseMove(ChessBoard board, boolean turn) {
+    if (openingBook.hasBoardState(board, turn)) {
+      return openingBook.getMove(board, turn);
+    }
+
     MoveEvalPair result = minimax(board, turn, depth, new HashMap<>(),
             -999999999, 999999999, 0);
     Move chosenMove = result.move;
