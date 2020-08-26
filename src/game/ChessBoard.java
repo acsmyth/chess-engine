@@ -1,8 +1,6 @@
 package game;
 
 import java.util.List;
-import java.util.Map;
-
 import piece.ChessPiece;
 import piece.Move;
 import util.Pos;

@@ -35,7 +35,8 @@ public class VisualRunner extends PApplet {
   }
 
   public void settings() {
-    size(1200 + sidebarWidth, 1200);
+    int screenW = 700;
+    size(screenW + sidebarWidth, screenW);
   }
 
   public void setup() {
