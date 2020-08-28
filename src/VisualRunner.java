@@ -35,7 +35,7 @@ public class VisualRunner extends PApplet {
   }
 
   public void settings() {
-    int screenW = 700;
+    int screenW = 1200;
     size(screenW + sidebarWidth, screenW);
   }
 
@@ -269,14 +269,14 @@ public class VisualRunner extends PApplet {
       case LEFT:
         if (!prevGameStates.isEmpty()) {
           ChessGame prevState = prevGameStates.pop();
-          futureGameStates.push(game);
+          futureGameStates.push(new ChessGameImpl(game));
           game = prevState;
         }
         break;
       case RIGHT:
         if (!futureGameStates.isEmpty()) {
           ChessGame nextState = futureGameStates.pop();
-          prevGameStates.push(game);
+          prevGameStates.push(new ChessGameImpl(game));
           game = nextState;
         }
         break;

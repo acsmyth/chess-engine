@@ -66,11 +66,18 @@ public class Move {
     }
   }
 
-  public String notateMove(ChessPiece[][] board) {
+  public String notateMove(ChessPiece[][] board, boolean side) {
     if (this instanceof NullMove) return "NULL";
     String pgn = "";
 
-    boolean isKing = board[fromR][fromC] instanceof King;
+    boolean isAmbiguous = false;
+    for (Move m : new ChessBoardImpl(board).getLegalMoves(side)) {
+      if (!this.equals(m) && m.toR == toR && m.toC == toC
+              && board[m.fromR][m.fromC].display().equals(board[fromR][fromC].display())) {
+        isAmbiguous = true;
+      }
+    }
+
     if (board[fromR][fromC] instanceof Pawn
             && board[fromR][toC] instanceof Pawn
             && board[fromR][fromC].side() != board[fromR][toC].side()
@@ -89,18 +96,24 @@ public class Move {
       } else {
         pgn = pgnCol(toC) + pgnRow(toR) + "=Q";
       }
-    // if pawn non capture move, just e4
+      // if pawn non capture move, just e4
     } else if (board[fromR][fromC] instanceof Pawn && !isCaptureMove(board)) {
       pgn = pgnCol(toC) + pgnRow(toR);
-    // if pawn capture move, exd4
+      // if pawn capture move, exd4
     } else if (board[fromR][fromC] instanceof Pawn) {
       pgn = pgnCol(fromC) + "x" + pgnCol(toC) + pgnRow(toR);
-    // if non-pawn non capture move, Nc4
+      // if non-pawn ambiguous non capture move, Nbc4
+    } else if (!isCaptureMove(board) && isAmbiguous) {
+      pgn = board[fromR][fromC].display() + pgnCol(fromC) + pgnCol(toC) + pgnRow(toR);
+      // if non-pawn non-ambiguous non capture move, Nc4
     } else if (!isCaptureMove(board)) {
-      pgn = board[fromR][fromC].display() + (isKing ? "" : pgnCol(fromC)) + pgnCol(toC) + pgnRow(toR);
+      pgn = board[fromR][fromC].display() + pgnCol(toC) + pgnRow(toR);
+    // if non-pawn capture move, Nbxc4
+    } else if (isCaptureMove(board) && isAmbiguous) {
+      pgn = board[fromR][fromC].display() + pgnCol(fromC) + "x" + pgnCol(toC) + pgnRow(toR);
     // if non-pawn capture move, Nxc4
     } else if (isCaptureMove(board)) {
-      pgn = board[fromR][fromC].display() + (isKing ? "" : pgnCol(fromC)) + "x" + pgnCol(toC) + pgnRow(toR);
+      pgn = board[fromR][fromC].display() + "x" + pgnCol(toC) + pgnRow(toR);
     }
 
     // additions:

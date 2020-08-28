@@ -18,8 +18,8 @@ public class PieceDrawer {
   public final PImage blackKingImg;
 
   public PieceDrawer(PApplet p) {
-    int xScl = 5;
-    int yScl = 5;
+    int xScl = 3;
+    int yScl = 3;
     String r = "resources/";
     whitePawnImg = p.loadImage(r + "white_pawn.PNG");
     whitePawnImg.resize(whitePawnImg.width / xScl, whitePawnImg.height / yScl);

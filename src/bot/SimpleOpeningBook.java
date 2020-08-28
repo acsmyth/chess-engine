@@ -5,7 +5,7 @@ import java.util.Map;
 import game.ChessBoard;
 import piece.Move;
 
-public class SimpleOpeningBook implements OpeningBook {
+public class SimpleOpeningBook implements BoardStateOpeningBook {
   private final Map<Integer, Move> whiteBook;
   private final Map<Integer, Move> blackBook;
 

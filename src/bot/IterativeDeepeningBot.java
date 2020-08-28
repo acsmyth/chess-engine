@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import game.ChessBoard;
 import game.ChessBoardImpl;
+import game.ChessGame;
 import piece.Move;
 import piece.NullMove;
 import util.Pair;
@@ -47,6 +48,11 @@ public class IterativeDeepeningBot implements Bot {
     }
     prevEval = result.eval;
     return chosenMove;
+  }
+
+  @Override
+  public Move chooseMove(ChessGame game, boolean turn) {
+    return chooseMove(game.getBoard(), turn);
   }
 
   private void reorderGameTree(GameTree gameTree, MoveEvalPair result) {

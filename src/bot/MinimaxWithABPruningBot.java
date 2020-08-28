@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import game.ChessBoard;
 import game.ChessBoardImpl;
+import game.ChessGame;
 import piece.Move;
 import piece.NullMove;
 import util.Settings;
@@ -12,7 +13,7 @@ import util.Settings;
 public class MinimaxWithABPruningBot implements Bot {
   private final Evaluator evaluator;
   private final MoveSorter moveSorter;
-  private final OpeningBook openingBook;
+  private final MoveSequenceOpeningBook openingBook;
   public static int depth;
   private double prevEval;
 
@@ -23,16 +24,12 @@ public class MinimaxWithABPruningBot implements Bot {
   public MinimaxWithABPruningBot() {
     evaluator = new ComplexEvaluator();
     moveSorter = new SimpleMoveSorter();
-    openingBook = new SimpleOpeningBook();
+    openingBook = new DatabaseOpeningBook();
     prevEval = 0;
   }
 
   @Override
   public Move chooseMove(ChessBoard board, boolean turn) {
-    if (openingBook.hasBoardState(board, turn)) {
-      return openingBook.getMove(board, turn);
-    }
-
     MoveEvalPair result = minimax(board, turn, depth, new HashMap<>(),
             -999999999, 999999999, 0);
     Move chosenMove = result.move;
@@ -41,6 +38,16 @@ public class MinimaxWithABPruningBot implements Bot {
     }
     prevEval = result.eval;
     return chosenMove;
+  }
+
+  @Override
+  public Move chooseMove(ChessGame game, boolean turn) {
+    String pgn = game.pgn();
+    pgn = pgn.substring(pgn.indexOf("\n\n") + 1).strip();
+    if (openingBook.hasBookMove(pgn, turn)) {
+      return openingBook.getMove(pgn, game, turn);
+    }
+    return chooseMove(game.getBoard(), turn);
   }
 
   MoveEvalPair minimax(ChessBoard board, boolean turn, int depthLeft,

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import game.ChessBoard;
 import game.ChessBoardImpl;
+import game.ChessGame;
 import piece.Move;
 
 public class SimpleMinimaxBot implements Bot {
@@ -22,6 +23,11 @@ public class SimpleMinimaxBot implements Bot {
     Move chosenMove = result.move;
     prevEval = result.eval;
     return chosenMove;
+  }
+
+  @Override
+  public Move chooseMove(ChessGame game, boolean turn) {
+    return chooseMove(game.getBoard(), turn);
   }
 
   MoveEvalPair minimax(ChessBoard board, boolean turn, int depthLeft,

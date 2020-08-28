@@ -24,6 +24,10 @@ public class ComplexEvaluator implements Evaluator {
     double totalMaterial = 0;
     double totalMaterialExceptPawns = 0;
     double eval = 0;
+
+    int numWhiteBishops = 0;
+    int numBlackBishops = 0;
+
     for (int r = 0; r < 8; r++) {
       for (int c = 0; c < 8; c++) {
         if (brd[r][c] != null) {
@@ -37,6 +41,11 @@ public class ComplexEvaluator implements Evaluator {
               break;
             case "Bishop":
               valChange = 3.1;
+              if (brd[r][c].side()) {
+                numWhiteBishops += 1;
+              } else {
+                numBlackBishops += 1;
+              }
               break;
             case "Rook":
               valChange = 5;
@@ -77,6 +86,10 @@ public class ComplexEvaluator implements Evaluator {
 
     // tempo bonus
     eval += turn ? 0.25 : -0.25;
+
+    // double bishops good
+    eval += numWhiteBishops == 2 ? 0.25 : 0;
+    eval += numBlackBishops == 2 ? -0.25 : 0;
 
     // if king moves before castling, very bad
     Pos whiteKingPos = board.getKingPos(turn);
@@ -206,9 +219,9 @@ public class ComplexEvaluator implements Evaluator {
         if (brd[r][c] instanceof Pawn) {
           if (pastPawn(r, c, brd)) {
             if (brd[r][c].side()) {
-              eval += lerp(r, 6, 1, 0.5, 3) * endGameScalar;
+              eval += lerp(r, 6, 1, 0.5, 1.5) * endGameScalar;
             } else {
-              eval += lerp(r, 1, 6, -0.5, -3) * endGameScalar;
+              eval += lerp(r, 1, 6, -0.5, -1.5) * endGameScalar;
             }
           } else {
             if (brd[r][c].side()) {
