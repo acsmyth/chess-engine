@@ -13,7 +13,7 @@ public class Utils {
 
   static {
     Gson gson = new Gson();
-    File file = new File("opening_book_data_2.json");
+    File file = new File("resources/opening_book_data_2.json");
     BufferedReader br = null;
     try {
       br = new BufferedReader(new FileReader(file));
