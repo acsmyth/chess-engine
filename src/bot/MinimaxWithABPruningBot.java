@@ -45,7 +45,11 @@ public class MinimaxWithABPruningBot implements Bot {
     String pgn = game.pgn();
     pgn = pgn.substring(pgn.indexOf("\n\n") + 1).strip();
     if (openingBook.hasBookMove(pgn, turn)) {
-      return openingBook.getMove(pgn, game, turn);
+      Move m = openingBook.getMove(pgn, game, turn);
+      if (m != null) {
+        prevEval = 0;
+        return m;
+      }
     }
     return chooseMove(game.getBoard(), turn);
   }

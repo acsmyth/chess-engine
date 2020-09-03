@@ -9,12 +9,19 @@ public class DatabaseOpeningBook implements MoveSequenceOpeningBook {
   @Override
   public boolean hasBookMove(String pgn, boolean side) {
     // process pgn
-    return Utils.openingBookInfo.containsKey(pgn);
+    return Utils.masterOpeningBookInfo.containsKey(pgn)
+            || Utils.lichessOpeningBookInfo.containsKey(pgn);
   }
 
   @Override
   public Move getMove(String pgn, ChessGame gameState, boolean side) {
-    String bookStr = Utils.openingBookInfo.get(pgn);
+    String bookStr;
+    if (Utils.masterOpeningBookInfo.containsKey(pgn)) {
+      bookStr = Utils.masterOpeningBookInfo.get(pgn);
+    } else {
+      bookStr = Utils.lichessOpeningBookInfo.get(pgn);
+    }
+
     Move move = null;
     for (Move m : gameState.getBoard().getLegalMoves(side)) {
       ChessGameImpl copy = new ChessGameImpl(gameState);
@@ -22,6 +29,10 @@ public class DatabaseOpeningBook implements MoveSequenceOpeningBook {
       String newMove = copy.pgn();
       newMove = newMove.substring(newMove.indexOf("\n\n") + 1).strip();
       newMove = newMove.substring(0, newMove.length()-2).strip();
+
+      // remove all newlines
+      newMove = newMove.replace('\n', '\0');
+
       //System.out.println(newMove);
       //System.out.println(newMove);
       //System.out.println("resulting pgn: " + newMove);
@@ -34,7 +45,7 @@ public class DatabaseOpeningBook implements MoveSequenceOpeningBook {
         break;
       }
     }
-    if (move == null) throw new RuntimeException(pgn + "\n" + bookStr);
+    //if (move == null) throw new RuntimeException(pgn + "\n" + bookStr);
     return move;
   }
 }
