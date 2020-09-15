@@ -27,7 +27,6 @@ public class Utils {
     masterOpeningBookInfo = gson.fromJson(br, HashMap.class);
     lichessOpeningBookInfo = gson.fromJson(br2, HashMap.class);
 
-    /*
     lichessOpeningBookInfo.put("1. e4 e5 2. Nf3 Nf6 3. Nxe5 *", "Nc6");
     lichessOpeningBookInfo.put("1. e4 e5 2. Nf3 Nf6 3. Nxe5 Nc6 4. Nxc6 *", "dxc6");
     lichessOpeningBookInfo.put("1. e4 e5 2. Nf3 Nf6 3. Nxe5 Nc6 4. Nxc6 dxc6 5. d3 *", "Bc5");
@@ -38,7 +37,6 @@ public class Utils {
     lichessOpeningBookInfo.put("1. e4 e5 2. Nf3 Nf6 3. Nxe5 Nc6 4. Nxc6 dxc6 5. d3 Bc5 6. Bg5 *", "Nxe4");
     lichessOpeningBookInfo.put("1. e4 e5 2. Nf3 Nf6 3. Nxe5 Nc6 4. Nxc6 dxc6 5. d3 Bc5 6. Bg5 Nxe4 7. dxe4 *", "Bxf2+");
     lichessOpeningBookInfo.put("1. e4 e5 2. Nf3 Nf6 3. Nxe5 Nc6 4. Nxc6 dxc6 5. d3 Bc5 6. Bg5 Nxe4 7. dxe4 Bxf2+ 8. Ke2", "Bg4+");
-    */
   }
 
   public static boolean inBounds(int r, int c) {

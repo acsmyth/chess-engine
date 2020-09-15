@@ -9,17 +9,24 @@ public class DatabaseOpeningBook implements MoveSequenceOpeningBook {
   @Override
   public boolean hasBookMove(String pgn, boolean side) {
     // process pgn
+    // remove all newlines
+    pgn = pgn.replace('\n', ' ').replace("  *", " *");
+    //System.out.println("p: " + pgn);
     return Utils.masterOpeningBookInfo.containsKey(pgn)
             || Utils.lichessOpeningBookInfo.containsKey(pgn);
   }
 
   @Override
   public Move getMove(String pgn, ChessGame gameState, boolean side) {
+    pgn = pgn.replace('\n', ' ').replace("  *", " *");
+
     String bookStr;
     if (Utils.masterOpeningBookInfo.containsKey(pgn)) {
       bookStr = Utils.masterOpeningBookInfo.get(pgn);
-    } else {
+    } else if (Utils.lichessOpeningBookInfo.containsKey(pgn)) {
       bookStr = Utils.lichessOpeningBookInfo.get(pgn);
+    } else {
+      throw new RuntimeException();
     }
 
     Move move = null;
@@ -29,9 +36,6 @@ public class DatabaseOpeningBook implements MoveSequenceOpeningBook {
       String newMove = copy.pgn();
       newMove = newMove.substring(newMove.indexOf("\n\n") + 1).strip();
       newMove = newMove.substring(0, newMove.length()-2).strip();
-
-      // remove all newlines
-      newMove = newMove.replace('\n', '\0');
 
       //System.out.println(newMove);
       //System.out.println(newMove);
