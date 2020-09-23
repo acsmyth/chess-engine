@@ -1,3 +1,4 @@
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Stack;
@@ -5,14 +6,21 @@ import bot.MinimaxWithABPruningBot;
 import game.ChessBoard;
 import game.ChessGame;
 import game.ChessGameImpl;
+import javafx.application.Application;
+import javafx.application.Platform;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+import javafx.stage.Stage;
 import piece.ChessPiece;
 import piece.Move;
 import processing.core.PApplet;
+import processing.sound.SoundFile;
 import util.Pair;
 import util.PieceDrawer;
 import util.Pos;
 import util.Settings;
 import util.Utils;
+import java.io.*;
 
 public class VisualRunner extends PApplet {
   private ChessGame game;
@@ -28,6 +36,7 @@ public class VisualRunner extends PApplet {
   private Stack<ChessGame> futureGameStates;
   private Pos drawArrowFrom;
   private List<Pair<Pos, Pos>> arrows;
+  private MediaPlayer mediaPlayer;
 
   // TODO - null move pruning, move ordering, extensions for captures (quiescence search)
   public static void main(String[] args) {
@@ -56,6 +65,9 @@ public class VisualRunner extends PApplet {
     drawBoard();
     drawPrevMove();
     drawBoardEval();
+    Platform.startup(() -> {
+
+    });
   }
 
   public void draw() {
@@ -63,6 +75,17 @@ public class VisualRunner extends PApplet {
     drawPrevMove();
     drawBoardEval();
     drawArrows();
+    if (((ChessGameImpl)game).shouldPlaySound) {
+      ((ChessGameImpl)game).shouldPlaySound = false;
+      // play sound
+      //Platform.startup(() -> {
+      URL file = VisualRunner.class.getClassLoader().getResource("tick_sound.mp3");
+      final Media media = new Media(file.toString());
+      mediaPlayer = new MediaPlayer(media);
+      mediaPlayer.play();
+      //});
+      //Platform.exit();
+    }
     if (shouldMakeComputerMove) {
       ChessGame savedCopy = new ChessGameImpl(game);
       if (game.makeComputerMove()) {

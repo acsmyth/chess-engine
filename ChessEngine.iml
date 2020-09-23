@@ -11,5 +11,6 @@
     <orderEntry type="library" name="core" level="project" />
     <orderEntry type="library" name="core" level="project" />
     <orderEntry type="library" name="gson-2.8.6" level="project" />
+    <orderEntry type="library" name="sound" level="project" />
   </component>
 </module>

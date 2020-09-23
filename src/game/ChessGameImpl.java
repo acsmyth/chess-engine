@@ -13,6 +13,7 @@ public class ChessGameImpl implements ChessGame {
   private Move prevMove;
   private final List<Move> movesMade;
   private final List<ChessBoard> boardStates;
+  public boolean shouldPlaySound;
 
   public ChessGameImpl() {
     board = new ChessBoardImpl();
@@ -21,6 +22,7 @@ public class ChessGameImpl implements ChessGame {
     prevMove = null;
     movesMade = new ArrayList<>();
     boardStates = new ArrayList<>();
+    shouldPlaySound = false;
   }
 
   public ChessGameImpl(ChessGame gameToCopy) {
@@ -31,11 +33,15 @@ public class ChessGameImpl implements ChessGame {
     prevMove = copy.prevMove;
     movesMade = new ArrayList<>(copy.movesMade);
     boardStates = new ArrayList<>(copy.boardStates);
+    shouldPlaySound = false;
   }
 
   @Override
   public boolean makeMove(int fromR, int fromC, int toR, int toC) {
     if (board.isLegalMove(fromR, fromC, toR, toC, turn)) {
+      // play sound
+      shouldPlaySound = true;
+
       Move m = new Move(fromR, fromC, toR, toC);
       boardStates.add(new ChessBoardImpl(board));
       movesMade.add(m);
