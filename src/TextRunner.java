@@ -27,7 +27,6 @@ public class TextRunner {
       System.out.println("\n");
     }
 
-    // TODO
     // Optimizations to test:
 
 

@@ -44,7 +44,5 @@ public class TimeTester {
     // 560 ms per run
     // WITH ZOBRIST HASHING TT:
     // 560 ms per run
-
-    // HASHSET INSTEAD OF LIST, NO NULL MOVE PRUNING
   }
 }

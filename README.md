@@ -16,3 +16,5 @@
 - e: toggle edit mode
 - left arrow key: undo move
 - right arrow key: redo move
+- hold right click: draw arrows
+- left click anywhere: remove arrows
