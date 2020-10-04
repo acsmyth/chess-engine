@@ -20,3 +20,6 @@
 - right arrow key       redo move
 - hold right click      draw arrows
 - left click anywhere   remove arrows
+
+## Running
+- Run the VisualRunner class
