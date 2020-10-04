@@ -49,7 +49,7 @@ public class VisualRunner extends PApplet {
   }
 
   public void setup() {
-    Settings.checkExtensions = true;
+    Settings.checkExtensions = false;
     game = new ChessGameImpl();
     drawer = new PieceDrawer(this);
     moveFrom = null;
