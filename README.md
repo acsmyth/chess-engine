@@ -12,14 +12,14 @@
 - Transposition table
 
 ## Commands
-- space bar             make computer move
-- e                     toggle edit mode
-- s                     flip board
-- t                     toggle check extensions
-- left arrow key        undo move
-- right arrow key       redo move
-- hold right click      draw arrows
-- left click anywhere   remove arrows
+- space bar: make computer move
+- e: toggle edit mode
+- s: flip board
+- t: toggle check extensions
+- left arrow key: undo move
+- right arrow key: redo move
+- hold right click: draw arrows
+- left click anywhere: remove arrows
 
 ## Running
 - Run the VisualRunner class
