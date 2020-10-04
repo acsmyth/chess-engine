@@ -44,14 +44,14 @@ public class VisualRunner extends PApplet {
   }
 
   public void settings() {
-    int screenW = 1200;
+    int screenW = 800;
     size(screenW + sidebarWidth, screenW);
   }
 
   public void setup() {
     Settings.checkExtensions = false;
     game = new ChessGameImpl();
-    drawer = new PieceDrawer(this);
+    drawer = new PieceDrawer(this, width);
     moveFrom = null;
     cellWidth = (width-sidebarWidth) / 8;
     cellHeight = height / 8;
