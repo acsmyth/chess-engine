@@ -19,7 +19,6 @@ public class PieceDrawer {
 
   public PieceDrawer(PApplet p, int width) {
     float xScl = (float)(((- 1 / 400.0) * (width - 800)) + 4.0);
-    System.out.println(xScl);
     float yScl = xScl;
     String r = "resources/";
     whitePawnImg = p.loadImage(r + "white_pawn.PNG");
