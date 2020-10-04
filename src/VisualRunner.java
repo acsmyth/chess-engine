@@ -55,7 +55,7 @@ public class VisualRunner extends PApplet {
     moveFrom = null;
     cellWidth = (width-sidebarWidth) / 8;
     cellHeight = height / 8;
-    shouldMakeComputerMove = true;
+    shouldMakeComputerMove = false;
     editMode = false;
     side = true;
     prevGameStates = new Stack<>();
@@ -65,9 +65,7 @@ public class VisualRunner extends PApplet {
     drawBoard();
     drawPrevMove();
     drawBoardEval();
-    Platform.startup(() -> {
-
-    });
+    Platform.startup(() -> {});
   }
 
   public void draw() {
@@ -77,14 +75,10 @@ public class VisualRunner extends PApplet {
     drawArrows();
     if (((ChessGameImpl)game).shouldPlaySound) {
       ((ChessGameImpl)game).shouldPlaySound = false;
-      // play sound
-      //Platform.startup(() -> {
       URL file = VisualRunner.class.getClassLoader().getResource("tick_sound.mp3");
       final Media media = new Media(file.toString());
       mediaPlayer = new MediaPlayer(media);
       mediaPlayer.play();
-      //});
-      //Platform.exit();
     }
     if (shouldMakeComputerMove) {
       ChessGame savedCopy = new ChessGameImpl(game);
@@ -121,22 +115,22 @@ public class VisualRunner extends PApplet {
         boolean side = brd[r][c].side();
         switch (brd[r][c].getClass().getSimpleName()) {
           case "Pawn":
-            image(side ? drawer.whitePawnImg : drawer.blackPawnImg, x - 6, y);
+            image(side ? drawer.whitePawnImg : drawer.blackPawnImg, x - 8, y);
             break;
           case "Knight":
-            image(side ? drawer.whiteKnightImg : drawer.blackKnightImg, x - 4, y);
+            image(side ? drawer.whiteKnightImg : drawer.blackKnightImg, x - 6, y);
             break;
           case "Bishop":
-            image(side ? drawer.whiteBishopImg : drawer.blackBishopImg, x - 4, y);
+            image(side ? drawer.whiteBishopImg : drawer.blackBishopImg, x - 5, y);
             break;
           case "Rook":
-            image(side ? drawer.whiteRookImg : drawer.blackRookImg, x - 3, y);
+            image(side ? drawer.whiteRookImg : drawer.blackRookImg, x - 5, y);
             break;
           case "Queen":
-            image(side ? drawer.whiteQueenImg : drawer.blackQueenImg, x - 7, y);
+            image(side ? drawer.whiteQueenImg : drawer.blackQueenImg, x - 8, y);
             break;
           case "King":
-            image(side ? drawer.whiteKingImg : drawer.blackKingImg, x - 2, y);
+            image(side ? drawer.whiteKingImg : drawer.blackKingImg, x - 6, y);
             break;
           default:
             throw new IllegalStateException("Invalid piece");
@@ -197,9 +191,6 @@ public class VisualRunner extends PApplet {
       pushMatrix();
       translate(c2 * cellWidth + half, r2 * cellWidth + half);
       rotate(atan2(r2 - r1, c2 - c1) + PI/2);
-      /*triangle(arrow.y.c * tileW, (arrow.y.r + 1) * tileW,
-              arrow.y.c * tileW + half, arrow.y.r * tileW,
-              (arrow.y.c + 1) * tileW, (arrow.y.r + 1) * tileW);*/
       int dist = cellWidth / 8;
       triangle(-dist, dist, 0, -dist, dist, dist);
       popMatrix();
