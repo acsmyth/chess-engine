@@ -12,14 +12,25 @@
 - Transposition table
 
 ## Commands
-- space bar: make computer move
-- e: toggle edit mode
-- s: flip board
-- t: toggle check extensions
-- left arrow key: undo move
-- right arrow key: redo move
-- hold right click: draw arrows
-- left click anywhere: remove arrows
+- <b>drag piece:</b> make move
+- <b>space bar:</b> make computer move
+- <b>e:</b> toggle edit mode
+- <b>s:</b> flip board
+- <b>t:</b> toggle check extensions
+- <b>left arrow key:</b> undo move
+- <b>right arrow key:</b> redo move
+- <b>hold right click:</b> draw arrows
+- <b>left click anywhere:</b> remove arrows
 
-## Running
-- Run the VisualRunner class
+## How to Run
+
+- If you have Java 8 installed:
+
+  `java -jar out/artifacts/ChessEngine_jar/ChessEngine.jar`
+
+- If you have Homebrew but not Java 8:
+
+  ```
+  brew install openjdk@8
+  /usr/local/opt/openjdk@8/bin/java -jar out/artifacts/ChessEngine_jar/ChessEngine.jar
+  ```

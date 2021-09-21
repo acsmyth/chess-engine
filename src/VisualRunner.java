@@ -53,8 +53,8 @@ public class VisualRunner extends PApplet {
     game = new ChessGameImpl();
     drawer = new PieceDrawer(this, width);
     moveFrom = null;
-    cellWidth = (int)((width-sidebarWidth) / 8);
-    cellHeight = (int)(height / 8);
+    cellWidth = (int)((width-sidebarWidth) / 7.95);
+    cellHeight = (int)(height / 7.95);
     shouldMakeComputerMove = false;
     editMode = false;
     side = true;

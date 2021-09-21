@@ -11,7 +11,6 @@ public class DatabaseOpeningBook implements MoveSequenceOpeningBook {
     // process pgn
     // remove all newlines
     pgn = pgn.replace('\n', ' ').replace("  *", " *");
-    //System.out.println("p: " + pgn);
     return Utils.masterOpeningBookInfo.containsKey(pgn)
             || Utils.lichessOpeningBookInfo.containsKey(pgn);
   }
@@ -36,14 +35,7 @@ public class DatabaseOpeningBook implements MoveSequenceOpeningBook {
       String newMove = copy.pgn();
       newMove = newMove.substring(newMove.indexOf("\n\n") + 1).trim();
       newMove = newMove.substring(0, newMove.length()-2).trim();
-
-      //System.out.println(newMove);
-      //System.out.println(newMove);
-      //System.out.println("resulting pgn: " + newMove);
       newMove = newMove.substring(newMove.lastIndexOf(" ")+1);
-      //System.out.println("newMove: " + newMove);
-      //System.out.println("bookStr: " + bookStr);
-      //System.out.println("pgn: " + pgn);
       if (newMove.equals(bookStr)) {
         move = m;
         break;

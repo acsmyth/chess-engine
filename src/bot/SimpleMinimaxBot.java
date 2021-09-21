@@ -55,11 +55,6 @@ public class SimpleMinimaxBot implements Bot {
     }
     Move bestMove = null;
     double bestEval = turn ? -999999 : 999999;
-    /*if (depthLeft == 4) {
-      for (Move m : legalMoves) {
-        System.out.println(m.toString());
-      }
-    }*/
     for (Move m : legalMoves) {
       ChessBoard newBoard = new ChessBoardImpl(board);
       newBoard.makeMove(m);
