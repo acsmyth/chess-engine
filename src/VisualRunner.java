@@ -44,7 +44,7 @@ public class VisualRunner extends PApplet {
   }
 
   public void settings() {
-    int screenW = 800;
+    int screenW = 750;
     size(screenW + sidebarWidth, screenW);
   }
 
@@ -53,8 +53,8 @@ public class VisualRunner extends PApplet {
     game = new ChessGameImpl();
     drawer = new PieceDrawer(this, width);
     moveFrom = null;
-    cellWidth = (width-sidebarWidth) / 8;
-    cellHeight = height / 8;
+    cellWidth = (int)((width-sidebarWidth) / 8);
+    cellHeight = (int)(height / 8);
     shouldMakeComputerMove = false;
     editMode = false;
     side = true;
@@ -65,7 +65,7 @@ public class VisualRunner extends PApplet {
     drawBoard();
     drawPrevMove();
     drawBoardEval();
-    Platform.startup(() -> {});
+//    Platform.startup(() -> {});
   }
 
   public void draw() {
@@ -73,13 +73,13 @@ public class VisualRunner extends PApplet {
     drawPrevMove();
     drawBoardEval();
     drawArrows();
-    if (((ChessGameImpl)game).shouldPlaySound) {
-      ((ChessGameImpl)game).shouldPlaySound = false;
-      URL file = VisualRunner.class.getClassLoader().getResource("tick_sound.mp3");
-      final Media media = new Media(file.toString());
-      mediaPlayer = new MediaPlayer(media);
-      mediaPlayer.play();
-    }
+//    if (((ChessGameImpl)game).shouldPlaySound) {
+//      ((ChessGameImpl)game).shouldPlaySound = false;
+//      URL file = VisualRunner.class.getClassLoader().getResource("tick_sound.mp3");
+//      final Media media = new Media(file.toString());
+//      mediaPlayer = new MediaPlayer(media);
+//      mediaPlayer.play();
+//    }
     if (shouldMakeComputerMove) {
       ChessGame savedCopy = new ChessGameImpl(game);
       if (game.makeComputerMove()) {

@@ -34,8 +34,8 @@ public class DatabaseOpeningBook implements MoveSequenceOpeningBook {
       ChessGameImpl copy = new ChessGameImpl(gameState);
       copy.makeMove(m.fromR, m.fromC, m.toR, m.toC);
       String newMove = copy.pgn();
-      newMove = newMove.substring(newMove.indexOf("\n\n") + 1).strip();
-      newMove = newMove.substring(0, newMove.length()-2).strip();
+      newMove = newMove.substring(newMove.indexOf("\n\n") + 1).trim();
+      newMove = newMove.substring(0, newMove.length()-2).trim();
 
       //System.out.println(newMove);
       //System.out.println(newMove);

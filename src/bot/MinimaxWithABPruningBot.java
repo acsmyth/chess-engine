@@ -43,7 +43,7 @@ public class MinimaxWithABPruningBot implements Bot {
   @Override
   public Move chooseMove(ChessGame game, boolean turn) {
     String pgn = game.pgn();
-    pgn = pgn.substring(pgn.indexOf("\n\n") + 1).strip();
+    pgn = pgn.substring(pgn.indexOf("\n\n") + 1).trim();
     if (openingBook.hasBookMove(pgn, turn)) {
       Move m = openingBook.getMove(pgn, game, turn);
       if (m != null) {
